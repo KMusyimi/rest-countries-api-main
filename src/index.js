@@ -1,4 +1,4 @@
-import './style.css'
+import * as css from './style.css'
 
 let countries;
 window.addEventListener("load", ()=>{

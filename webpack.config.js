@@ -32,10 +32,9 @@ module.exports = {
             },
             {
                 test: /\.css$/i,
-                use: ["style-loader", "css-loader"],
-            },
+                use: ["style-loader", "css-loader"]
+            }
         ]
-
     },
     devServer: {
         static: {
@@ -45,11 +44,6 @@ module.exports = {
         port: 5050,
     },
     optimization: {
-
         runtimeChunk: 'single',
-
-    },
-    module: {
-
-    },
+    }
 };
