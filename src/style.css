@@ -1,0 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800&display=swap');
+
+:root {
+    --white: hsl(0, 0%, 100%);
+}
+
+[data-theme="light"] {
+    --bg-color: hsl(0, 0%, 98%);
+    --ele-bg-color: var(--white);
+    --txt-color: hsl(200, 15%, 8%);
+    --ip-color: hsl(0, 0%, 52%);
+}
+
+[data-theme="dark"] {
+    --bg-color: hsl(207, 26%, 17%);
+    --ele-bg-color:hsl(209, 23%, 22%);
+    --txt-color: var(--white);
+    --ip-color: var(--white);
+}
+html {
+    box-sizing: border-box;
+
+}
+*, *::before, *::after{
+    margin: unset;
+    padding: unset;
+    box-sizing: inherit;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--txt-color);
+}
