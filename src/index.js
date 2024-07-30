@@ -1,5 +1,4 @@
-import * as css from './style.css'
-import { ThemeSwitcher } from './theme';
+import './style.css'
 
 let countries;
 window.addEventListener("load", () =>
