@@ -45,9 +45,5 @@ module.exports = {
     },
     optimization: {
         runtimeChunk: 'single',
-<<<<<<< HEAD
-    },
-=======
     }
->>>>>>> a670a1dfba80fd863855090e86a08ec31e4155f3
 };

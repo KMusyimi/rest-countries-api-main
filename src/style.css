@@ -8,7 +8,7 @@
 }
 
 [data-theme="light"] {
-    --bg-color: hsl(0, 0%, 98%);
+    --bg-color: hsl(0, 0%, 94%);
     --ele-bg-color: var(--white);
     --txt-color: hsl(200, 15%, 8%);
     --ip-color: hsl(0, 0%, 52%);
@@ -44,7 +44,8 @@ body {
 }
 
 button,
-input {
+input,
+input::placeholder, a {
     font-family: inherit;
     
 }
@@ -78,7 +79,6 @@ img {
     display: grid;
     background-color: var(--ele-bg-color);
     grid-template-columns: 2fr 1fr;
-    box-shadow: 1px 1px 3.5px var(--bxs-color);
     place-content: center;
 }
 .header img {
@@ -91,7 +91,7 @@ img {
     align-items: center;
     justify-content: end;
     gap: 0.45em;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 600;
 }
 
@@ -102,22 +102,80 @@ img {
     align-items: center;
     justify-content: center;
     height: 50px;
-    padding-inline: 1.75em;
-    gap: 1em;
-    box-shadow: 1px 1px 3.5px var(--bxs-color);
+    padding-inline: 1.55em;
+    gap: 1.1em;
     border-radius: .35em;
+    margin-bottom: 2em;
 }
 .form>.search_container svg {
     color: cadetblue;
     width: 30px;
     flex: 0 1 30px;
 }
+.form>.search_container:has(> input:focus){
+    outline: 2px solid cadetblue;
+    box-shadow: 0px 0px 10px cadetblue;
+    transition: all var(--trs-duration) var(--trs-timing);
+}
 .form>.search_container input{
     background-color: inherit;
     color: inherit;
     border: none;
     height: 60%;
+    font-size: 0.9rem;
     width: 75%;
     flex: 1 1 100%;
     
+}
+.form>.search_container input:focus{
+    outline: transparent;
+}
+.filter_wrapper button, 
+.filter_wrapper button + div{
+    font-size: .88rem;
+    background-color: var(--ele-bg-color);
+    width: 14em;
+    border-radius: .35em;
+    padding: 1em .65em 1em 1.35em;
+}
+
+
+.filter_wrapper button{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1em;
+    margin-bottom: 0.5em;
+}
+.filter_wrapper button + div {
+    height: auto;
+    max-height: 0px;
+    overflow: hidden;
+    visibility: hidden;
+    opacity: 0;
+    transition: max-height var(--trs-duration) var(--trs-timing), visibility 0ms ease-in-out, opacity var(--trs-duration) var(--trs-timing);
+}
+.filter_wrapper button svg {
+    width: 20px;
+    rotate: 0deg;
+    transition: rotate var(--trs-duration) var(--trs-timing);
+}
+.filter_wrapper button.expanded > svg{
+    rotate: 180deg;
+}
+.filter_wrapper button.expanded + div {
+    visibility: visible;
+    opacity: 1;
+    max-height: 190px;
+}
+
+.filter_wrapper button+div li{
+    margin-bottom: 0.65em;
+}
+.filter_wrapper button+div li:last-of-type{
+    margin-bottom: 0;
+}
+.filter_wrapper button+div li > a {
+    display: block;
+    width: 100%;
 }

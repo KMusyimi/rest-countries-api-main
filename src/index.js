@@ -1,11 +1,15 @@
 import './style.css'
+import { ThemeSwitcher } from './theme';
 
 let countries;
 window.addEventListener("load", () =>
 {
-    
-    getData();
     const _ = new ThemeSwitcher();
+    const dropdownBtn = document.querySelector(".dropdown_btn");
+    dropdownBtn.addEventListener("click", function(){
+        dropdownBtn.classList.toggle("expanded");
+    });
+    getData();
 });
 
 async function getData()
