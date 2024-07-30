@@ -45,32 +45,40 @@ body {
 
 button,
 input,
-input::placeholder, a {
+input::placeholder,
+a {
     font-family: inherit;
-    
+
 }
+
 li {
     list-style: none;
 }
+
 a {
     color: inherit;
     text-decoration: none;
 }
+
 button {
     color: inherit;
     cursor: pointer;
     border: none;
     background-color: inherit;
 }
+
 img {
     max-width: 100%;
 }
 
-.container header > h1{
+.container header>h1 {
     font-weight: 800;
     font-size: 1em;
 }
-.header, .main, .wrapper{
+
+.header,
+.main,
+.wrapper {
     padding: 1.75em 1.15em;
 
 }
@@ -81,11 +89,13 @@ img {
     grid-template-columns: 2fr 1fr;
     place-content: center;
 }
+
 .header img {
     width: 23px;
 
 }
-.header > button{
+
+.header>button {
     text-transform: capitalize;
     display: flex;
     align-items: center;
@@ -95,7 +105,7 @@ img {
     font-weight: 600;
 }
 
-.form > .search_container {
+.form>.search_container {
     background-color: var(--ele-bg-color);
     display: flex;
     color: var(--ip-color);
@@ -107,17 +117,20 @@ img {
     border-radius: .35em;
     margin-bottom: 2em;
 }
+
 .form>.search_container svg {
     color: cadetblue;
     width: 30px;
     flex: 0 1 30px;
 }
-.form>.search_container:has(> input:focus){
+
+.form>.search_container:has(> input:focus) {
     outline: 2px solid cadetblue;
     box-shadow: 0px 0px 10px cadetblue;
     transition: all var(--trs-duration) var(--trs-timing);
 }
-.form>.search_container input{
+
+.form>.search_container input {
     background-color: inherit;
     color: inherit;
     border: none;
@@ -125,13 +138,15 @@ img {
     font-size: 0.9rem;
     width: 75%;
     flex: 1 1 100%;
-    
+
 }
-.form>.search_container input:focus{
+
+.form>.search_container input:focus {
     outline: transparent;
 }
-.filter_wrapper button, 
-.filter_wrapper button + div{
+
+.filter_wrapper button,
+.filter_wrapper button+div {
     font-size: .88rem;
     background-color: var(--ele-bg-color);
     width: 14em;
@@ -140,14 +155,25 @@ img {
 }
 
 
-.filter_wrapper button{
+.filter_wrapper button {
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 1em;
     margin-bottom: 0.5em;
 }
-.filter_wrapper button + div {
+
+.filter_wrapper button svg {
+    width: 20px;
+    rotate: 0deg;
+    transition: rotate var(--trs-duration) var(--trs-timing);
+}
+
+.filter_wrapper button.expanded>svg {
+    rotate: 180deg;
+}
+
+.filter_wrapper button+div {
     height: auto;
     max-height: 0px;
     overflow: hidden;
@@ -155,27 +181,22 @@ img {
     opacity: 0;
     transition: max-height var(--trs-duration) var(--trs-timing), visibility 0ms ease-in-out, opacity var(--trs-duration) var(--trs-timing);
 }
-.filter_wrapper button svg {
-    width: 20px;
-    rotate: 0deg;
-    transition: rotate var(--trs-duration) var(--trs-timing);
-}
-.filter_wrapper button.expanded > svg{
-    rotate: 180deg;
-}
-.filter_wrapper button.expanded + div {
+
+.filter_wrapper button.expanded+div {
     visibility: visible;
     opacity: 1;
     max-height: 190px;
 }
 
-.filter_wrapper button+div li{
+.filter_wrapper button+div li {
     margin-bottom: 0.65em;
 }
-.filter_wrapper button+div li:last-of-type{
+
+.filter_wrapper button+div li:last-of-type {
     margin-bottom: 0;
 }
-.filter_wrapper button+div li > a {
+
+.filter_wrapper button+div li>a {
     display: block;
     width: 100%;
 }
