@@ -1,12 +1,17 @@
-import './style.css'
+import * as css from './style.css'
+import { ThemeSwitcher } from './theme';
 
 let countries;
-window.addEventListener("load", ()=>{
+window.addEventListener("load", () =>
+{
+    
     getData();
+    const _ = new ThemeSwitcher();
 });
 
-async function getData(){
-   
+async function getData()
+{
+
     const dataPromise = await fetch('https://restcountries.com/v3.1/all?fields=name,population,region,capital,flags');
     const data = await dataPromise.json();
     countries = data;

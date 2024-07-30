@@ -1,13 +1,49 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rest Countries</title>
-    <!-- <link rel="stylesheet" href="/src/style.css"> -->
     <link type="text/css" href="./style.css">
+    <link rel="icon" href="./assets/images/6771594_earth_globe_map_world_icon.svg" type="image/svg">
 </head>
+
 <body>
-    <h1>Rest Countries Api</h1>
+    <div class="container">
+        <header class="header">
+            <h1>Where in the world&quest;</h1>
+            <button data-theme-toggle type="button" class="theme_btn" aria-label="Change to light theme"></button>
+        </header>
+        <div class="wrapper">
+            <form action="#" class="form">
+                <div class="search_container">
+                    <svg  viewBox="0 0 48 48" fill="currentColor">
+                        <path
+                            d="M31 28h-1.59l-.55-.55c1.96-2.27 3.14-5.22 3.14-8.45 0-7.18-5.82-13-13-13s-13 5.82-13 13 5.82 13 13 13c3.23 0 6.18-1.18 8.45-3.13l.55.55v1.58l10 9.98 2.98-2.98-9.98-10zm-12 0c-4.97 0-9-4.03-9-9s4.03-9 9-9 9 4.03 9 9-4.03 9-9 9z" />
+                    </svg>
+                    <input type="search" name="search" id="search" placeholder="Search for a country...">
+                </div>
+            </form>
+            <div class="filter_wrapper">
+                <button type="button">Filter by Region<svg viewBox="0 0 48 48" >
+                        <path d="M14.83 16.42 24 25.59l9.17-9.17L36 19.25l-12 12-12-12z" fill="currentColor"></path>
+                    </svg></button>
+                <div class="dropdown_wrapper">
+                    <nav class="filter_nav">
+                        <ul>
+                            <li><a href="#Africa">Africa</a></li>
+                            <li><a href="#America">America</a></li>
+                            <li><a href="#Asia">Asia</a></li>
+                            <li><a href="#Europe">Europe</a></li>
+                            <li><a href="#Oceania">Oceania</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <main id="content" class="main"></main>
+    </div>
 </body>
+
 </html>

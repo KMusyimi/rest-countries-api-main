@@ -1,9 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap');
+
 
 :root {
     --white: hsl(0, 0%, 100%);
+    --trs-duration: 300ms;
+    --trs-timing: cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
 [data-theme="light"] {
@@ -11,19 +12,27 @@
     --ele-bg-color: var(--white);
     --txt-color: hsl(200, 15%, 8%);
     --ip-color: hsl(0, 0%, 52%);
+    --bxs-color: hsl(0, 0%, 58%);
 }
 
 [data-theme="dark"] {
     --bg-color: hsl(207, 26%, 17%);
-    --ele-bg-color:hsl(209, 23%, 22%);
+    --ele-bg-color: hsl(209, 23%, 22%);
     --txt-color: var(--white);
     --ip-color: var(--white);
+    --bxs-color: hsl(210, 23%, 30%);
 }
+
 html {
     box-sizing: border-box;
-
+    font-size: 16px;
+    line-height: 1.5;
+    font-synthesis: none;
 }
-*, *::before, *::after{
+
+*,
+*::before,
+*::after {
     margin: unset;
     padding: unset;
     box-sizing: inherit;
@@ -32,4 +41,85 @@ html {
 body {
     background-color: var(--bg-color);
     color: var(--txt-color);
+    font-family: "Nunito Sans", system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    transition: var(--trs-duration) background-color var(--trs-timing), color var(--trs-duration) var(--trs-timing);
+}
+
+button,
+input {
+    font-family: inherit;
+    
+}
+li {
+    list-style: none;
+}
+a {
+    color: inherit;
+    text-decoration: none;
+}
+button {
+    color: inherit;
+    cursor: pointer;
+    border: none;
+    background-color: inherit;
+}
+img {
+    max-width: 100%;
+}
+
+.container header > h1{
+    font-weight: 800;
+    font-size: 1em;
+}
+.header, .main, .wrapper{
+    padding: 1.75em 1.15em;
+
+}
+
+.header {
+    display: grid;
+    background-color: var(--ele-bg-color);
+    grid-template-columns: 2fr 1fr;
+    box-shadow: 1px 1px 3.5px var(--bxs-color);
+    place-content: center;
+}
+.header img {
+    width: 23px;
+
+}
+.header > button{
+    text-transform: capitalize;
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    gap: 0.45em;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.form > .search_container {
+    background-color: var(--ele-bg-color);
+    display: flex;
+    color: var(--ip-color);
+    align-items: center;
+    justify-content: center;
+    height: 50px;
+    padding-inline: 1.75em;
+    gap: 1em;
+    box-shadow: 1px 1px 3.5px var(--bxs-color);
+    border-radius: .35em;
+}
+.form>.search_container svg {
+    color: cadetblue;
+    width: 30px;
+    flex: 0 1 30px;
+}
+.form>.search_container input{
+    background-color: inherit;
+    color: inherit;
+    border: none;
+    height: 60%;
+    width: 75%;
+    flex: 1 1 100%;
+    
 }
