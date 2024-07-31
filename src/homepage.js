@@ -23,13 +23,17 @@ export class HomePage
         let html = `<article class="country_card">
         <section>
             <h1>${data.name['common']}</h1>
-            <p><span>population:</span> ${data.population}</p>
+            <p><span>population:</span> ${this.numberWithCommas(data.population)}</p>
             <p><span>region:</span> ${data.region}</p>
             <p><span>capital:</span> ${data.capital}</p>
         </section>
         <figure><img src=${data.flags['svg']} alt="countries flags image" loading="lazy"></figure>
         </article>`;
         content.insertAdjacentHTML("beforeend", html);
+    }
+    numberWithCommas(x)
+    {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
     async getData()
     {

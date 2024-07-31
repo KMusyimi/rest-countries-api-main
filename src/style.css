@@ -242,7 +242,7 @@ img {
 }
 .main {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(225px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     justify-content: center;
     align-items: center;
     gap: 3em;
@@ -250,8 +250,9 @@ img {
 .country_card{
     display: flex;
     flex-direction: column;
-    width: 85%;
-    max-height: fit-content;
+    width: 87%;
+    height: fit-content;
+    max-width: 35em;
     margin: 0 auto;
     background-color: var(--ele-bg-color);
     border-radius: var(--brs-width);
@@ -261,12 +262,15 @@ img {
 }
 .country_card>section h1{
     font-weight: 800;
-    margin-bottom: 0.55em;
+    margin-bottom: 0.65em;
 }
 .country_card>section p {
     font-weight: 300; 
+    font-size: 0.9rem;
     text-transform: capitalize;
+    margin-bottom: 0.45em;
 }
+
 .country_card>section p > span{
     font-weight: 600;
 }
@@ -274,11 +278,12 @@ img {
     order: -1;
     border-top-left-radius: var(--brs-width);
     border-top-right-radius: var(--brs-width);
+    height: 13.5em;
 }
 .country_card>figure img {
-    object-fit: contain;
+    object-fit: cover;
     border-radius: inherit;
-    height: fit-content;
+    height: 100%;
     width: 100%;
 
 }
