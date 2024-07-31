@@ -278,7 +278,7 @@ img {
     order: -1;
     border-top-left-radius: var(--brs-width);
     border-top-right-radius: var(--brs-width);
-    height: 13.5em;
+    height: 11em;
 }
 .country_card>figure img {
     object-fit: cover;
