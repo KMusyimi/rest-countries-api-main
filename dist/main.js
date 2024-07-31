@@ -63,7 +63,7 @@ class HomePage {
     button.style.bottom = bottom;
     button.style.right = right;
     button.style.display = 'none';
-    button.appendChild(img);
+    button.insertAdjacentElement("beforeend", img);
     button.addEventListener("click", this.scrollTopEvt);
     content.insertAdjacentElement("beforeend", button);
   }
