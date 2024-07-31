@@ -27,7 +27,7 @@
 
 html {
     box-sizing: border-box;
-
+    scroll-behavior: smooth;
 }
 
 *,
@@ -158,7 +158,7 @@ img {
 }
 
 .form>.search_container svg {
-    color: cadetblue;
+    color: hsl(182, 25%, 50%);
     width: 30px;
     flex: 0 1 30px;
 }
@@ -278,7 +278,7 @@ img {
     order: -1;
     border-top-left-radius: var(--brs-width);
     border-top-right-radius: var(--brs-width);
-    height: 11em;
+    height: 12em;
 }
 .country_card>figure img {
     object-fit: cover;
@@ -286,6 +286,11 @@ img {
     height: 100%;
     width: 100%;
 
+}
+#back_top {
+    position: fixed;
+    width: 13vmin;
+    padding: .3em;
 }
 @media only screen and (min-width: 800px) {
 
