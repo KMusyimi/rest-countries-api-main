@@ -125,7 +125,7 @@ img {
 
 .header>h1 {
     font-weight: 800;
-    font-size: 1em;
+    font-size: clamp(1rem, 0.4375rem + 1.8vw, 1.55rem);
 }
 
 .header img {
@@ -250,19 +250,19 @@ img {
 
 .main {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(275px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     justify-content: space-between;
     align-items: center;
     row-gap: 4em;
     column-gap: 2.25em;
+    width: 100%;
 }
 
 .country_card {
     display: flex;
     flex-direction: column;
-    width: 87%;
+    width: min(85%, 19em);
     height: fit-content;
-    max-width: 16.5em;
     margin: 0 auto;
     background-color: var(--ele-bg-color);
     border-radius: var(--brs-width);
@@ -316,10 +316,6 @@ img {
     .wrapper {
         padding: 1.5em 3.5em;
 
-    }
-
-    .header>h1 {
-        font-size: 1.45rem;
     }
 
     .wrapper {
