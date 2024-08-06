@@ -1,5 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap');
 @import url('./spinner.css');
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap');
 
 :root {
     --white: hsl(0, 0%, 100%);
@@ -83,23 +83,25 @@ img {
     inset: 0;
     background-color: var(--ele-bg-color);
     z-index: 100;
+    visibility: visible;
+    opacity: 1;
     height: 100dvh;
-
+    transition: visibility 0ms ease-in-out,
+        opacity var(--trs-duration) var(--trs-timing);
 }
 
 
 .loading_container.hidden {
     visibility: hidden;
     opacity: 0;
-    transition: visibility 0ms ease-in-out,
-        opacity var(--trs-duration) var(--trs-timing);
+
 }
 
 .container {
     opacity: 0;
     visibility: hidden;
     transition: visibility 0ms ease-in-out,
-        opacity var(--trs-duration) var(--trs-timing);
+        opacity var(--trs-duration) var(--trs-timing) 150ms;
 }
 
 .container.visible {
@@ -140,9 +142,11 @@ img {
     font-size: 0.85rem;
     font-weight: 600;
 }
+
 .wrapper {
     padding-bottom: 0;
 }
+
 .form>.search_container {
     background-color: var(--ele-bg-color);
     display: flex;
@@ -183,9 +187,11 @@ img {
 .form>.search_container input:focus {
     outline: transparent;
 }
-.filter_wrapper{
+
+.filter_wrapper {
     position: relative;
 }
+
 .filter_wrapper button,
 .filter_wrapper button+div {
     font-size: .88rem;
@@ -229,6 +235,7 @@ img {
     opacity: 1;
     max-height: 14em;
     max-width: 14em;
+    box-shadow: 0px 0px  6px var(--bxs-color);
 }
 
 .filter_wrapper button+div a {
@@ -240,46 +247,54 @@ img {
 .filter_wrapper button+div a:last-of-type {
     margin-bottom: 0;
 }
+
 .main {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    justify-content: center;
+    grid-template-columns: repeat(auto-fit, minmax(275px, 1fr));
+    justify-content: space-between;
     align-items: center;
-    gap: 3em;
+    row-gap: 4em;
+    column-gap: 2.25em;
 }
-.country_card{
+
+.country_card {
     display: flex;
     flex-direction: column;
     width: 87%;
     height: fit-content;
-    max-width: 35em;
+    max-width: 16.5em;
     margin: 0 auto;
     background-color: var(--ele-bg-color);
     border-radius: var(--brs-width);
 }
-.country_card > section{
-    padding: 1.35em;
+
+.country_card>section {
+    padding: 1.65em 1.35em;
 }
-.country_card>section h1{
+
+.country_card>section h1 {
     font-weight: 800;
     margin-bottom: 0.65em;
 }
+
 .country_card>section p {
-    font-weight: 300; 
+    font-weight: 300;
     font-size: 0.9rem;
     text-transform: capitalize;
     margin-bottom: 0.45em;
 }
 
-.country_card>section p > span{
+.country_card>section p>span {
     font-weight: 600;
 }
-.country_card > figure{
+
+.country_card>figure {
     order: -1;
     border-top-left-radius: var(--brs-width);
     border-top-right-radius: var(--brs-width);
-    height: 12em;
+    height: 9.75em;
 }
+
 .country_card>figure img {
     object-fit: cover;
     border-radius: inherit;
@@ -287,11 +302,13 @@ img {
     width: 100%;
 
 }
+
 #back_top {
     position: fixed;
     width: 13vmin;
     padding: .3em;
 }
+
 @media only screen and (min-width: 800px) {
 
     .header,

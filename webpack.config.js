@@ -1,5 +1,6 @@
 const path = require('path');
-
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
@@ -15,9 +16,17 @@ module.exports = {
             title: 'Development',
             template: './src/index.html'
         }),
+        new MiniCssExtractPlugin()
     ],
     module: {
         rules: [
+            {
+                test: /\.css$/i,
+            },
+            {
+                test: /\.css$/i,
+                use: [MiniCssExtractPlugin.loader,"css-loader"]
+            },
             {
                 test: /\.(?:js|mjs|cjs)$/,
                 exclude: /node_modules/,
@@ -30,10 +39,7 @@ module.exports = {
                     }
                 }
             },
-            {
-                test: /\.css$/i,
-                use: ["style-loader", "css-loader"]
-            }
+            
         ]
     },
     devServer: {
@@ -45,5 +51,12 @@ module.exports = {
     },
     optimization: {
         runtimeChunk: 'single',
+        minimize: true,
+        minimizer: [
+            new CssMinimizerPlugin({
+                parallel: 4,
+            }),
+        ]
+       
     }
 };

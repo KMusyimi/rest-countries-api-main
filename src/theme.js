@@ -35,8 +35,8 @@ export class ThemeSwitcher
     }
     initialize()
     {
-        themeBtn.innerHTML = currentThemeSetting === "dark"? lightHtml : darkHtml;
         this.updateThemeOnHtml(currentThemeSetting);
+        themeBtn.innerHTML = currentThemeSetting === "dark"? lightHtml : darkHtml;
         themeBtn.addEventListener("click", this.handleToggleEvt.bind(this));
     }
    
