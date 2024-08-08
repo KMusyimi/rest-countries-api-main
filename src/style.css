@@ -3,7 +3,7 @@
 
 :root {
     --white: hsl(0, 0%, 100%);
-    --trs-duration: 300ms;
+    --trs-duration: 350ms;
     --trs-timing: cubic-bezier(.46, .03, .52, .96);
     --brs-width: .35em;
     --loader-bgc: hsla(0, 0%, 0%, 0.8);
@@ -74,6 +74,13 @@ img {
     max-height: 100%;
 }
 
+.fw-800 {
+    font-weight: 800;
+}
+
+.fw-600 {
+    font-weight: 600;
+}
 
 .loading_container {
     display: flex;
@@ -82,7 +89,7 @@ img {
     position: fixed;
     inset: 0;
     background-color: var(--ele-bg-color);
-    z-index: 100;
+    z-index: 150;
     visibility: visible;
     opacity: 1;
     height: 100dvh;
@@ -125,7 +132,7 @@ img {
 
 .header>h1 {
     font-weight: 800;
-    font-size: clamp(1rem, 0.4375rem + 1.8vw, 1.55rem);
+    font-size: clamp(1rem, 0.3125rem + 2.2vw, 1.55rem);
 }
 
 .header img {
@@ -145,6 +152,10 @@ img {
 
 .wrapper {
     padding-bottom: 0;
+}
+
+.wrapper.hidden {
+    visibility: hidden;
 }
 
 .form>.search_container {
@@ -225,6 +236,7 @@ img {
     max-height: 0px;
     max-width: 0px;
     overflow: hidden;
+    z-index: 100;
     visibility: hidden;
     opacity: 0;
     transition: max-height var(--trs-duration) var(--trs-timing) 40ms, visibility 0ms ease-in-out, opacity var(--trs-duration) var(--trs-timing) 40ms, max-width var(--trs-duration) var(--trs-timing);
@@ -235,13 +247,19 @@ img {
     opacity: 1;
     max-height: 14em;
     max-width: 14em;
-    box-shadow: 0px 0px  6px var(--bxs-color);
+    box-shadow: 0px 0px 6px var(--bxs-color);
 }
 
 .filter_wrapper button+div a {
     display: block;
     margin-bottom: 0.65em;
     width: 100%;
+    opacity: 0;
+    transition: opacity var(--trs-duration) var(--trs-timing) 150ms;
+}
+
+.filter_wrapper button.expanded+div a {
+    opacity: 1;
 }
 
 .filter_wrapper button+div a:last-of-type {
@@ -257,7 +275,9 @@ img {
     column-gap: 2.25em;
     width: 100%;
 }
-
+.main:has(>.country_details){
+    padding: 2em 1.85em;
+}
 .country_card {
     display: flex;
     flex-direction: column;
@@ -266,6 +286,12 @@ img {
     margin: 0 auto;
     background-color: var(--ele-bg-color);
     border-radius: var(--brs-width);
+    scale: var(--sc, 1);
+    transition: scale var(--trs-duration) ease-in-out 500ms;
+}
+
+.country_card:hover {
+    --sc: 1.25;
 }
 
 .country_card>section {
@@ -273,7 +299,6 @@ img {
 }
 
 .country_card>section h1 {
-    font-weight: 800;
     margin-bottom: 0.65em;
 }
 
@@ -284,9 +309,6 @@ img {
     margin-bottom: 0.45em;
 }
 
-.country_card>section p>span {
-    font-weight: 600;
-}
 
 .country_card>figure {
     order: -1;
@@ -305,10 +327,61 @@ img {
 
 #back_top {
     position: fixed;
-    width: 13vmin;
+    z-index: 100;
+    width: max(10vmin, 1.25em);
     padding: .3em;
 }
 
+.back-btn {
+    display: flex;
+    align-items: center;
+    text-transform: capitalize;
+    font-size: 1rem;
+    gap: .65em;
+    font-weight: 300;
+    width: fit-content;
+}
+
+.bxs-bd {
+    background-color: var(--ele-bg-color);
+    box-shadow: 0px 0px 4.85px var(--bxs-color);
+    padding: 0.45em 1.65em;
+    border-radius: 0.18em;
+}
+.country_details {
+    display: grid;
+    gap: 2em;
+}
+.country_details h1 {
+    font-size: clamp(1.2375rem, 0.8313rem + 1.3vw, 1.5625rem);
+}
+.country_details p,
+.country_details span{
+    text-transform: capitalize;
+    margin-bottom: .65em;
+}
+.country_details section p .tld{
+    text-transform: none;
+}
+.country_details p{
+    font-weight: 300;
+}
+.country_details figure{
+    order: -1;
+}
+.country_details section>.borders span{
+    display: block;
+    margin-bottom: 1em;
+}
+.country_details section>header,
+.country_details section> div{
+    margin-bottom: 1.85em;
+}
+.country_details section > .borders div {
+    display: flex;
+    gap: 0.65em;
+    flex-wrap: wrap;
+}
 @media only screen and (min-width: 800px) {
 
     .header,
@@ -326,5 +399,23 @@ img {
 
     .wrapper>div {
         justify-self: right;
+    }
+}
+
+@media only screen and (min-width: 1024px) {
+    button {
+        cursor: pointer;
+    }
+
+    .country_card {
+        cursor: pointer;
+        scale: var(--sc, 1);
+        transition: scale var(--trs-duration) ease-in-out var(--trs-delay, 100ms);
+
+    }
+
+    .country_card:hover {
+        --trs-delay: 1s;
+        --sc: 1.25;
     }
 }
