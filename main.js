@@ -1,6 +1,123 @@
 "use strict";
 (self["webpackChunkrest_countries_api_main"] = self["webpackChunkrest_countries_api_main"] || []).push([["main"],{
 
+/***/ "./src/details.js":
+/*!************************!*\
+  !*** ./src/details.js ***!
+  \************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   DetailsPage: () => (/* binding */ DetailsPage)
+/* harmony export */ });
+/* harmony import */ var _format_population__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./format_population */ "./src/format_population.js");
+
+const content = document.getElementById("content");
+const wrapper = document.querySelector(".wrapper");
+const arrowLeft = `<svg viewBox="0 0 32 32" height="23px" width="23px"><defs><style>.cls-1{fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px;}</style></defs><title/><g id="arrow-left"><line class="cls-1" x1="3" x2="29" y1="16" y2="16"/><line class="cls-1" x1="3" x2="7" y1="16" y2="11"/><line class="cls-1" x1="3" x2="7" y1="16" y2="21"/></g></svg>`;
+class DetailsPage {
+  constructor(data) {
+    this.data = data;
+    this.initialize();
+  }
+  initialize() {
+    wrapper.style.display = 'none';
+    this.detailsPageContent();
+  }
+  detailsPageContent() {
+    content.innerHTML = '';
+    this.createBackBtn();
+    const lastKey = Object.keys(this.data.name['nativeName']).pop();
+    const languages = Object.values(this.data.languages).join(', ');
+    const html = `
+            <article class="country_details">
+                <section>
+                    <header>
+                        <h1 class='fw-800'>${this.data.name['common']}</h1>
+                    </header>
+                    <div>
+                        <p><span class="fw-600">native name:</span> ${this.data.name['nativeName'][lastKey]['common']}</p>
+                        <p><span class="fw-600">population:</span> ${(0,_format_population__WEBPACK_IMPORTED_MODULE_0__.numberWithCommas)(this.data.population)}</p>
+                        <p><span class="fw-600">region:</span> ${this.data.region}</p>
+                        <p><span class="fw-600">sub region:</span> ${this.data.subregion}</p>
+                        <p><span class="fw-600">capital:</span> ${this.data.capital}</p>
+                    </div>
+                    <div>
+                        <p><span class="fw-600">top level domain:</span> <span class='tld'>${this.data.tld[0]}</span></p>
+                        <p><span class="fw-600">currencies:</span> ${this.currencyName(this.data.currencies)}</p>
+                        <p><span class="fw-600">languages:</span> ${languages}</p>
+                    </div>
+                    <div class="borders"><span class="fw-600">border countries:</span> </div>
+                </section >
+                <figure class="flag"><img src="${this.data.flags['svg']}" alt="${this.data.flags['alt']}" loading="lazy"></figure>
+            </article >
+    `;
+    content.insertAdjacentHTML("beforeend", html);
+    this.populateBorderCountries();
+  }
+  createBackBtn() {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.classList.add('back-btn', 'bxs-bd');
+    button.innerText = "back";
+    button.insertAdjacentHTML("afterbegin", arrowLeft);
+    content.insertAdjacentElement('afterbegin', button);
+  }
+  async getCountryNameByCode(url) {
+    const fetchPromise = await fetch(url);
+    const data = await fetchPromise.json();
+    return data[0].name['common'];
+  }
+  populateBorderCountries() {
+    const borders = document.querySelector(".borders");
+    const countriesWrapper = document.createElement("div");
+    if (this.data.borders === undefined) {
+      countriesWrapper.innerHTML = '<span>No Border Countries</span>';
+      borders.insertAdjacentElement("beforeend", countriesWrapper);
+      return;
+    }
+    this.data.borders.forEach(async el => {
+      let url = `https://restcountries.com/v3.1/alpha?codes=${el.toLowerCase()}`;
+      const borderList = document.createElement("li");
+      const borderLink = document.createElement("a");
+      const countries = await this.getCountryNameByCode(url);
+      borderLink.id = countries.toLowerCase();
+      borderList.className = 'bxs-bd';
+      borderLink.innerText = countries;
+      borderList.appendChild(borderLink);
+      countriesWrapper.appendChild(borderList);
+      borders.insertAdjacentElement('beforeend', countriesWrapper);
+    });
+  }
+  currencyName(obj) {
+    for (const key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        const el = obj[key];
+        return el.name;
+      }
+    }
+  }
+}
+
+/***/ }),
+
+/***/ "./src/format_population.js":
+/*!**********************************!*\
+  !*** ./src/format_population.js ***!
+  \**********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   numberWithCommas: () => (/* binding */ numberWithCommas)
+/* harmony export */ });
+function numberWithCommas(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+/***/ }),
+
 /***/ "./src/homepage.js":
 /*!*************************!*\
   !*** ./src/homepage.js ***!
@@ -11,27 +128,31 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   HomePage: () => (/* binding */ HomePage)
 /* harmony export */ });
+/* harmony import */ var _details__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./details */ "./src/details.js");
+/* harmony import */ var _format_population__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./format_population */ "./src/format_population.js");
+
+
 const content = document.getElementById("content");
 const searchInput = document.querySelector("#search");
+const searchForm = document.querySelector("#searchForm");
+const navLinks = document.querySelectorAll(".dropdown_wrapper > a");
 let url = 'https://restcountries.com/v3.1/all?fields=name,population,region,capital,flags';
-let countries;
 class HomePage {
   constructor() {
+    this.initialize();
+  }
+  initialize() {
     this.backToTopElement({
       bottom: "3em",
       right: "2em"
     });
-    this.initialize();
-  }
-  initialize() {
-    document.getElementById("searchForm").addEventListener("submit", evt => {
-      evt.preventDefault();
-    });
-    this.getData();
-    this.searchCountry();
     window.addEventListener("scroll", () => {
       this.displayButtonOnScroll();
     });
+    searchForm.addEventListener("submit", this.formSubmit.bind(this));
+    this.getData(url);
+    this.searchInput();
+    this.filterByRegion();
   }
   addCards(arr) {
     arr.forEach(data => {
@@ -39,19 +160,25 @@ class HomePage {
     });
   }
   createCard(data) {
-    let html = `<article class="country_card" id=${data.name['common'].toLowerCase()}>
+    const article = document.createElement("article");
+    if (data.capital === undefined) {
+      data.capital = 'has no capital';
+    } else {
+      data.capital = data.capital.join(', ');
+    }
+    let html = `
             <section>
-                <h1>${data.name['common']}</h1>
-                <p><span>population:</span> ${this.numberWithCommas(data.population)}</p>
-                <p><span>region:</span> ${data.region}</p>
-                <p><span>capital:</span> ${data.capital.join(", ")}</p>
+                <h1 id="name" class="fw-800">${data.name['common']}</h1>
+                <p><span class="fw-600">population:</span> ${(0,_format_population__WEBPACK_IMPORTED_MODULE_1__.numberWithCommas)(data.population)}</p>
+                <p><span class="fw-600">region:</span> ${data.region}</p>
+                <p><span class="fw-600">capital:</span> ${data.capital}</p>
             </section>
             <figure><img src=${data.flags['png']} alt="${data.flags['alt']}" loading="lazy"></figure>
-        </article>`;
-    content.insertAdjacentHTML("beforeend", html);
-  }
-  numberWithCommas(x) {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        `;
+    article.id = data.name['common'].toLowerCase();
+    article.className = "country_card";
+    article.innerHTML = html;
+    content.insertAdjacentElement("beforeend", article);
   }
   backToTopElement(_ref) {
     let {
@@ -65,7 +192,7 @@ class HomePage {
     button.style.bottom = bottom;
     button.style.right = right;
     button.style.display = 'none';
-    button.addEventListener("click", this.scrollTopEvt);
+    button.addEventListener("click", this.scrollTopEvt, false);
     content.insertAdjacentElement("beforeend", button);
   }
   displayButtonOnScroll() {
@@ -80,16 +207,15 @@ class HomePage {
     document.body.scrollTop = 0;
     document.documentElement.scrollTop = 0;
   }
-  async getData() {
+  async getData(url) {
     const dataPromise = await fetch(url);
     const data = await dataPromise.json();
     data.sort(function (a, b) {
       return a.name['common'] > b.name['common'] ? 1 : -1;
     });
-    countries = data;
-    this.addCards(countries);
+    this.addCards(data);
   }
-  searchCountry() {
+  searchInput() {
     searchInput.addEventListener("keyup", this.searchInputEvt);
   }
   searchInputEvt(evt) {
@@ -97,12 +223,42 @@ class HomePage {
     const filter = searchInput.value.toLowerCase();
     const articles = document.querySelectorAll("#content > article");
     for (let i = 0; i < articles.length; i++) {
-      if (articles[i].id.toLowerCase().indexOf(filter) > -1) {
+      if (articles[i].id.indexOf(filter) > -1) {
         articles[i].style.display = "";
       } else {
         articles[i].style.display = "none";
       }
     }
+  }
+  async individualItem(url) {
+    const itemPromise = await fetch(url);
+    const data = await itemPromise.json();
+    return data;
+  }
+  async formSubmit(evt) {
+    evt.preventDefault();
+    const country = searchInput.value;
+    const url = `https://restcountries.com/v3.1/name/${country}?fullText=true`;
+    const data = await this.individualItem(url);
+    const detailsPage = new _details__WEBPACK_IMPORTED_MODULE_0__.DetailsPage(data[0]);
+    console.log('url :>> ', url);
+  }
+  // TODO: refactor code 
+  filterByRegion() {
+    navLinks.forEach(link => {
+      link.addEventListener("click", this.filterEvt.bind(this));
+    });
+  }
+  filterEvt(evt) {
+    evt.preventDefault();
+    content.innerHTML = '';
+    this.backToTopElement({
+      bottom: "3em",
+      right: "2em"
+    });
+    const clickedLink = evt.target.getAttribute('href').substring(1);
+    const url = `https://restcountries.com/v3.1/region/${clickedLink}`;
+    this.getData(url);
   }
 }
 
@@ -122,22 +278,16 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const _ = new _theme__WEBPACK_IMPORTED_MODULE_1__.ThemeSwitcher();
-const navLinks = document.querySelectorAll(".dropdown_wrapper > a");
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById('searchForm').reset();
-  navLinks.forEach(link => {
-    link.addEventListener("click", evt => {
-      evt.preventDefault();
-      console.log('evt.getAttribute(href) :>> ', evt.target.getAttribute('href'));
-      const clickedLink = evt.target.getAttribute('href').substring(1);
-      console.log('clickedLink :>> ', clickedLink);
-    });
-  });
   const dropdownBtn = document.querySelector(".dropdown_btn");
   const homepage = new _homepage__WEBPACK_IMPORTED_MODULE_2__.HomePage();
   setTimeout(() => {
     document.querySelector(".loading_container").classList.add("hidden");
     document.querySelector(".container").classList.add('visible');
+    setTimeout(() => {
+      document.querySelector(".loading_container").style.display = 'none';
+    }, 100);
   }, 2000);
   window.scrollBy({
     top: 20,
@@ -146,6 +296,9 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   dropdownBtn.addEventListener("click", function () {
     dropdownBtn.classList.toggle("expanded");
+    setTimeout(() => {
+      dropdownBtn.classList.remove("expanded");
+    }, 20000);
   });
 });
 
