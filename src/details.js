@@ -15,11 +15,17 @@ export class DetailsPage
     {
         wrapper.style.display = 'none';
         this.detailsPageContent();
+        document.querySelector(".back-btn").addEventListener("click", this.backBtnEvt);
     }
     detailsPageContent()
     {
         content.innerHTML = '';
         this.createBackBtn();
+        if (this.data === undefined){
+            content.insertAdjacentHTML("beforeend", '<p>Country does not exist</p>')
+            return;
+
+        }
         const lastKey = Object.keys(this.data.name['nativeName']).pop();
         const languages = Object.values(this.data.languages).join(', ');
         const html = `
@@ -28,14 +34,14 @@ export class DetailsPage
                     <header>
                         <h1 class='fw-800'>${this.data.name['common']}</h1>
                     </header>
-                    <div>
+                    <div class="details">
                         <p><span class="fw-600">native name:</span> ${this.data.name['nativeName'][lastKey]['common']}</p>
                         <p><span class="fw-600">population:</span> ${numberWithCommas(this.data.population)}</p>
                         <p><span class="fw-600">region:</span> ${this.data.region}</p>
                         <p><span class="fw-600">sub region:</span> ${this.data.subregion}</p>
-                        <p><span class="fw-600">capital:</span> ${this.data.capital}</p>
+                        <p><span class="fw-600">capital:</span> ${this.data.capital.join(', ')}</p>
                     </div>
-                    <div>
+                    <div class="details">
                         <p><span class="fw-600">top level domain:</span> <span class='tld'>${this.data.tld[0]}</span></p>
                         <p><span class="fw-600">currencies:</span> ${this.currencyName(this.data.currencies)}</p>
                         <p><span class="fw-600">languages:</span> ${languages}</p>
@@ -44,7 +50,7 @@ export class DetailsPage
                 </section >
                 <figure class="flag"><img src="${this.data.flags['svg']}" alt="${this.data.flags['alt']}" loading="lazy"></figure>
             </article >
-    `
+        `;
         content.insertAdjacentHTML("beforeend", html);
         this.populateBorderCountries();
     }
@@ -69,7 +75,7 @@ export class DetailsPage
         const countriesWrapper = document.createElement("div");
         if (this.data.borders === undefined)
         {
-            countriesWrapper.innerHTML = '<span>No Border Countries</span>';
+            countriesWrapper.innerHTML = '<span class="bxs-bd">No Border Countries</span>';
             borders.insertAdjacentElement("beforeend", countriesWrapper);
             return;
         }
@@ -97,5 +103,8 @@ export class DetailsPage
                 return el.name
             }
         }
+    }
+    backBtnEvt(){
+        console.log('click :>> ');
     }
 }

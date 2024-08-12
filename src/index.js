@@ -1,6 +1,7 @@
 import * as css from './style.css'
 import { ThemeSwitcher } from './theme';
 import { HomePage } from './homepage';
+import { Scroll } from './scroll';
 
 const _ = new ThemeSwitcher();
 
@@ -9,6 +10,7 @@ document.addEventListener("DOMContentLoaded", () =>
     document.getElementById('searchForm').reset();
     const dropdownBtn = document.querySelector(".dropdown_btn");
     const homepage = new HomePage();
+    const scroll = new Scroll();
     setTimeout(() =>
     {
         document.querySelector(".loading_container").classList.add("hidden");
@@ -19,7 +21,6 @@ document.addEventListener("DOMContentLoaded", () =>
         }, 100);
 
     }, 2000);
-    window.scrollBy({ top: 20, left: 0, behavior: 'smooth' });
     dropdownBtn.addEventListener("click", function ()
     {
         dropdownBtn.classList.toggle("expanded");
