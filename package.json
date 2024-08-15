@@ -9,9 +9,7 @@
     "watch": "webpack --progress --watch && cp -R src/assets dist/",
     "copy": "cp -R src/assets dist/",
     "server": "webpack serve --open",
-    "scripts": {
-      "rest-countries-api-main": "git subtree push --prefix dist origin gh-pages"
-    }
+    "deploy": "git subtree push --prefix dist origin gh-pages"
   },
   "keywords": [],
   "author": "",

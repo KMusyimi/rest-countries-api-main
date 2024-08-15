@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rest Countries</title>
+    <title></title>
     <link type="text/css" href="./style.css">
     <link rel="icon" href="./assets/images/6771594_earth_globe_map_world_icon.svg" type="image/svg">
 </head>
@@ -15,17 +15,17 @@
     </div>
     <div class="container">
         <header class="header">
-            <h1>Where in the world&quest;</h1>
+            <h1><a href="/">Where in the world&quest;</a></h1>
             <button data-theme-toggle type="button" class="theme_btn" aria-label="Change to light theme"></button>
         </header>
         <div class="wrapper">
-            <form class="form" id="searchForm">
+            <form class="form" id="searchForm" method="post" >
                 <div class="search_container">
                     <svg viewBox="0 0 48 48" fill="currentColor">
                         <path
                             d="M31 28h-1.59l-.55-.55c1.96-2.27 3.14-5.22 3.14-8.45 0-7.18-5.82-13-13-13s-13 5.82-13 13 5.82 13 13 13c3.23 0 6.18-1.18 8.45-3.13l.55.55v1.58l10 9.98 2.98-2.98-9.98-10zm-12 0c-4.97 0-9-4.03-9-9s4.03-9 9-9 9 4.03 9 9-4.03 9-9 9z" />
                     </svg>
-                    <input type="search" name="search" id="search" placeholder="Search for a country...">
+                    <input type="search" name="search" id="search" autofocus placeholder="Search for a country...">
                 </div>
             </form>
             <div class="filter_wrapper">
@@ -36,11 +36,12 @@
                     </svg>
                 </button>
                 <div class="dropdown_wrapper">
-                    <a href="#africa" data-link>Africa</a>
-                    <a href="#america" data-link>America</a>
-                    <a href="#asia" data-link>Asia</a>
-                    <a href="#europe" data-link>Europe</a>
-                    <a href="#oceania" data-link>Oceania</a>
+                    <a href="/" data-link class="active">All</a>
+                    <a href="/africa" data-link>Africa</a>
+                    <a href="/america" data-link>America</a>
+                    <a href="/asia" data-link>Asia</a>
+                    <a href="/europe" data-link>Europe</a>
+                    <a href="/oceania" data-link>Oceania</a>
 
                 </div>
             </div>

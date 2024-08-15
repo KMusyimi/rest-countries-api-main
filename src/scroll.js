@@ -7,7 +7,6 @@ export class Scroll
     initialize()
     {
         this.backToTopButton({ bottom: "3em", right: "2em" });
-        window.scrollBy({ top: 20, left: 0, behavior: 'smooth' });
         window.addEventListener("scroll", () =>
         {
             this.displayButtonOnScroll();

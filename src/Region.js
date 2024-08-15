@@ -1,14 +1,13 @@
 import AbstractView from "./AbstractView";
 
-let url = 'https://restcountries.com/v3.1/all?fields=name,population,region,capital,flags';
-
-export class HomePage extends AbstractView
+export default class extends AbstractView
 {
     constructor()
     {
         super();
-        this.setTitle("Home");
-        this.url = url;
+        this.region = location.pathname.substring(1);
+        this.setTitle(this.region);
+        this.url = `https://restcountries.com/v3.1/region/${this.region}`;
     }
     async initialize()
     {
@@ -20,5 +19,4 @@ export class HomePage extends AbstractView
     {
         return this.cardHtml(data);
     }
-
 }

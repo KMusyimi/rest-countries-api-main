@@ -9,6 +9,8 @@ module.exports = {
     output: {
         filename: '[name].js',
         path: path.resolve(__dirname, 'dist'),
+        // clean: true,
+        publicPath:'/',
     },
     devtool: "source-map",
     plugins: [
@@ -20,9 +22,6 @@ module.exports = {
     ],
     module: {
         rules: [
-            {
-                test: /\.css$/i,
-            },
             {
                 test: /\.css$/i,
                 use: [MiniCssExtractPlugin.loader,"css-loader"]
@@ -47,7 +46,10 @@ module.exports = {
             directory: path.join(__dirname, 'dist'),
         },
         compress: true,
-        port: 5050,
+        port: 5502,
+        watchFiles: ['./src/index.html'],
+        historyApiFallback: true,
+
     },
     optimization: {
         runtimeChunk: 'single',

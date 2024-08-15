@@ -1,34 +1,50 @@
-import { numberWithCommas } from "./format_population";
+import AbstractView from "./AbstractView";
 
-const content = document.getElementById("content");
 const wrapper = document.querySelector(".wrapper");
+
 const arrowLeft = `<svg viewBox="0 0 32 32" height="23px" width="23px"><defs><style>.cls-1{fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px;}</style></defs><title/><g id="arrow-left"><line class="cls-1" x1="3" x2="29" y1="16" y2="16"/><line class="cls-1" x1="3" x2="7" y1="16" y2="11"/><line class="cls-1" x1="3" x2="7" y1="16" y2="21"/></g></svg>`;
 
-export class DetailsPage
+export class DetailsPage extends AbstractView
 {
-    constructor(data)
+    constructor(country)
     {
-        this.data = data;
-        this.initialize();
+        super();
+        this.country = country;
+        this.url = `https://restcountries.com/v3.1/name/${country}?fullText=true`;
+        this.setTitle(country);
     }
-    initialize()
+    async initialize()
     {
         wrapper.style.display = 'none';
-        this.detailsPageContent();
-        document.querySelector(".back-btn").addEventListener("click", this.backBtnEvt);
+        const data = await this.getData(this.url);
+        this.data = data[0];
+        this.setHtml();
     }
-    detailsPageContent()
+    async setHtml()
     {
-        content.innerHTML = '';
-        this.createBackBtn();
-        if (this.data === undefined){
-            content.insertAdjacentHTML("beforeend", '<p>Country does not exist</p>')
-            return;
+        document.getElementById("content").innerHTML = '';
 
+        this.BackBtnElement();
+
+        if (this.data === undefined)
+        {
+            const html = `
+                <article>
+                    <h1>Country does not exist!</h1>
+                </article>`;
+            document.getElementById("content").insertAdjacentHTML("beforeend", html);
+            return;
         }
+
+        const html = await this.getHtml();
+        document.getElementById("content").insertAdjacentHTML('beforeend', html);
+        this.populateBorders(this.data);
+    }
+    async getHtml()
+    {
         const lastKey = Object.keys(this.data.name['nativeName']).pop();
         const languages = Object.values(this.data.languages).join(', ');
-        const html = `
+        return `
             <article class="country_details">
                 <section>
                     <header>
@@ -36,7 +52,7 @@ export class DetailsPage
                     </header>
                     <div class="details">
                         <p><span class="fw-600">native name:</span> ${this.data.name['nativeName'][lastKey]['common']}</p>
-                        <p><span class="fw-600">population:</span> ${numberWithCommas(this.data.population)}</p>
+                        <p><span class="fw-600">population:</span> ${this.numberWithCommas(this.data.population)}</p>
                         <p><span class="fw-600">region:</span> ${this.data.region}</p>
                         <p><span class="fw-600">sub region:</span> ${this.data.subregion}</p>
                         <p><span class="fw-600">capital:</span> ${this.data.capital.join(', ')}</p>
@@ -46,53 +62,48 @@ export class DetailsPage
                         <p><span class="fw-600">currencies:</span> ${this.currencyName(this.data.currencies)}</p>
                         <p><span class="fw-600">languages:</span> ${languages}</p>
                     </div>
-                    <div class="borders"><span class="fw-600">border countries:</span> </div>
+                    <div class="borders"><span class="fw-600">border countries:</span><div class='borders__wrapper'></div></div>
                 </section >
                 <figure class="flag"><img src="${this.data.flags['svg']}" alt="${this.data.flags['alt']}" loading="lazy"></figure>
             </article >
         `;
-        content.insertAdjacentHTML("beforeend", html);
-        this.populateBorderCountries();
     }
-    createBackBtn()
+    BackBtnElement()
     {
         const button = document.createElement("button");
         button.type = "button";
         button.classList.add('back-btn', 'bxs-bd');
         button.innerText = "back";
         button.insertAdjacentHTML("afterbegin", arrowLeft);
-        content.insertAdjacentElement('afterbegin', button);
+        button.addEventListener("click", this.backBtnEvt);
+        document.getElementById("content").insertAdjacentElement('afterbegin', button);
     }
-    async getCountryNameByCode(url)
+    async getBordersData(country)
     {
-        const fetchPromise = await fetch(url);
-        const data = await fetchPromise.json();
+        let url = `https://restcountries.com/v3.1/alpha?codes=${country.toLowerCase()}`;
+        const data = await this.getData(url);
         return data[0].name['common'];
     }
-    populateBorderCountries()
+    async populateBorders()
     {
-        const borders = document.querySelector(".borders");
-        const countriesWrapper = document.createElement("div");
+        console.log('thisData :>> ', this.data);
+        const borderWrapper = document.querySelector(".borders__wrapper");
         if (this.data.borders === undefined)
         {
-            countriesWrapper.innerHTML = '<span class="bxs-bd">No Border Countries</span>';
-            borders.insertAdjacentElement("beforeend", countriesWrapper);
+            borderWrapper.insertAdjacentHTML('afterbegin', '<span class="bxs-bd">No Border Countries</span>');
             return;
         }
-        this.data.borders.forEach(async el =>
+        this.data.borders.forEach(async country =>
         {
-            let url = `https://restcountries.com/v3.1/alpha?codes=${el.toLowerCase()}`;
-            const borderList = document.createElement("li");
-            const borderLink = document.createElement("a");
-            const countries = await this.getCountryNameByCode(url);
-            borderLink.id = countries.toLowerCase();
-            borderList.className = 'bxs-bd';
-            borderLink.innerText = countries;
-            borderList.appendChild(borderLink);
-            countriesWrapper.appendChild(borderList);
-            borders.insertAdjacentElement('beforeend', countriesWrapper);
+            const el = await this.getBordersData(country);
+            const html = `
+                <li class="bxs-bd">
+                    <a href="/${el.toLowerCase()}" data-link>${el}</a>
+                </li>`;
+            borderWrapper.insertAdjacentHTML("beforeend", html);
         });
     }
+
     currencyName(obj)
     {
         for (const key in obj)
@@ -104,7 +115,9 @@ export class DetailsPage
             }
         }
     }
-    backBtnEvt(){
-        console.log('click :>> ');
+    backBtnEvt()
+    {
+        history.back();
+        wrapper.style.display = '';
     }
 }
