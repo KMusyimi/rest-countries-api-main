@@ -1,6 +1,6 @@
-import AbstractView from "./AbstractView";
+import { HomePage } from "./homepage";
 
-export default class extends AbstractView
+export default class extends HomePage
 {
     constructor()
     {
@@ -9,14 +9,5 @@ export default class extends AbstractView
         this.setTitle(this.region);
         this.url = `https://restcountries.com/v3.1/region/${this.region}`;
     }
-    async initialize()
-    {
-        const data = await this.getData(this.url);
-        this.setHtml(data);
-    }
-
-    async getHtml(data)
-    {
-        return this.cardHtml(data);
-    }
+   
 }

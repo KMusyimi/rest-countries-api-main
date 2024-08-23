@@ -7,16 +7,14 @@ export class Scroll
     initialize()
     {
         this.backToTopButton({ bottom: "3em", right: "2em" });
-        window.addEventListener("scroll", () =>
-        {
-            this.displayButtonOnScroll();
-        });
     }
-    displayButtonOnScroll()
+    displayButtonOnScroll(btn)
     {
-        const btn = document.getElementById("back_top");
-        if (btn != null)
-        {
+        // console.log('btn :>> ', btn);
+
+        // const btn = document.getElementById("back_top");
+        // if (btn != null)
+        // {
             if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20)
             {
                 btn.style.display = 'block';
@@ -25,7 +23,7 @@ export class Scroll
             {
                 btn.style.display = 'none';
             }
-        }
+        // }
     }
     backToTopButton({ bottom, right })
     {
@@ -38,7 +36,7 @@ export class Scroll
         button.style.display = 'none';
 
         button.addEventListener("click", this.backToTopEvt, false);
-        content.insertAdjacentElement("beforeend", button);
+        document.getElementById("content").appendChild(button);
     }
 
     backToTopEvt()

@@ -249,9 +249,11 @@ img {
     max-width: 14em;
     box-shadow: 0px 0px 6px var(--bxs-color);
 }
+
 .filter_wrapper button+div a.active{
     display: none;
 }
+
 .filter_wrapper button+div a {
     display: block;
     margin-bottom: 0.65em;
@@ -270,7 +272,7 @@ img {
 
 .main {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(265px, 1fr));
     justify-content: space-between;
     align-items: center;
     row-gap: 3em;
@@ -338,7 +340,7 @@ img {
     padding: .3em;
 }
 
-.back-btn {
+#back-btn {
     display: flex;
     align-items: center;
     text-transform: capitalize;
@@ -432,7 +434,8 @@ img {
     .country_details section {
         display: grid;
         grid-template-columns: repeat(2, minmax(150px, 1fr));
-        grid-template-rows: 50px min(100%, 11.25em) min(100%, 10.15em);
+        grid-template-rows: 50px min(100%, 11.25em) minmax(10em, 1fr);
+        row-gap: 1em;
     }
 
     .country_details figure {
@@ -493,6 +496,10 @@ img {
     a,
     button {
         cursor: pointer;
+    }
+    a:hover,
+    button:hover {
+        color: cadetblue;
     }
 
     .country_card {

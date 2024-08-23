@@ -1,18 +1,16 @@
-import AbstractView from "./AbstractView";
-import { DetailsPage } from "./details";
 
 const searchInput = document.querySelector("#search");
 const searchForm = document.querySelector("#searchForm");
 
-export default class extends AbstractView
+export default class 
 {
     constructor()
     {
-        super();
+        // super();
     }
     initialize()
     {
-        searchForm.addEventListener("submit", this.formSubmit.bind(this));
+        // searchForm.addEventListener("submit", this.formSubmit.bind(this));
         searchInput.addEventListener("keyup", this.searchInputEvt);
     }
 
@@ -31,14 +29,5 @@ export default class extends AbstractView
                 articles[i].style.display = "none";
             }
         }
-    }
-    async formSubmit(evt)
-    {
-        evt.preventDefault();
-        const country = searchInput.value;
-        searchForm.reset();
-        history.pushState({}, '', location.pathname);
-        const detailsPage = new DetailsPage(country);
-        detailsPage.initialize();
     }
 }
