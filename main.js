@@ -27,39 +27,149 @@ __webpack_require__.r(__webpack_exports__);
   numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
-  setHtml(arr) {
-    document.getElementById("content").innerHTML = '';
-    this.sortDataAlphabetically(arr);
-    arr.forEach(async data => {
-      this.verifyCapital(data);
-      let html = await this.getHtml(data);
-      document.getElementById("content").insertAdjacentHTML('beforeend', html);
-    });
-  }
   sortDataAlphabetically(arr) {
     arr.sort(function (a, b) {
       return a.name['common'] > b.name['common'] ? 1 : -1;
     });
   }
-  verifyCapital(data) {
+  formatCapital(data) {
     if (data.capital === undefined) {
-      data.capital = 'has no capital';
-    } else {
-      data.capital = data.capital.join(', ');
+      return 'has no capital';
     }
+    return data.capital.join(', ');
   }
-  cardHtml(data) {
-    return `
-            <article id='${data.name['common'].toLowerCase()}' class='country_card'>
-                <section>
-                    <h1 id="name" class="fw-800">${data.name['common']}</h1>
-                    <p><span class="fw-600">population:</span> ${this.numberWithCommas(data.population)}</p>
-                    <p><span class="fw-600">region:</span> ${data.region}</p>
-                    <p><span class="fw-600">capital:</span> ${data.capital}</p>
-                </section>
-                <figure><img src=${data.flags['png']} alt="${data.flags['alt']}" loading="lazy"></figure>
-            </article>
+});
+
+/***/ }),
+
+/***/ "./src/Page.js":
+/*!*********************!*\
+  !*** ./src/Page.js ***!
+  \*********************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _AbstractView__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractView */ "./src/AbstractView.js");
+
+const wrapper = document.querySelector(".wrapper");
+const arrowLeft = `<svg viewBox="0 0 32 32" height="23px" width="23px"><defs><style>.cls-1{fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px;}</style></defs><title/><g id="arrow-left"><line class="cls-1" x1="3" x2="29" y1="16" y2="16"/><line class="cls-1" x1="3" x2="7" y1="16" y2="11"/><line class="cls-1" x1="3" x2="7" y1="16" y2="21"/></g></svg>`;
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (class extends _AbstractView__WEBPACK_IMPORTED_MODULE_0__["default"] {
+  constructor() {
+    super();
+    this.params = this.getCountryParam();
+  }
+  async getHtml() {
+    this.setTitle(this.params);
+    this.url = `https://restcountries.com/v3.1/name/${this.params}?fullText=true`;
+    wrapper.style.display = 'none';
+    document.getElementById("content").innerHTML = '';
+    this.createBackBtn();
+    console.log('this.url :>> ', this.url);
+    const dataPromise = await this.getData(this.url);
+    if (dataPromise.status === 404) {
+      return `<article><h1>Country not found!</h1></article>`;
+    }
+    const html = await Promise.all(dataPromise.map(async data => {
+      const lastKey = Object.keys(data.name['nativeName']).pop();
+      const languages = Object.values(data.languages).join(', ');
+      const bordersHtml = await this.getBordersHtml(data.borders);
+      return `
+                <article class="country_details">
+                    <section>
+                        <header>
+                            <h1 class='fw-800'>${data.name['common']}</h1>
+                        </header>
+                        <div class="details">
+                            <p><span class="fw-600">native name:</span> ${data.name['nativeName'][lastKey]['common']}</p>
+                            <p><span class="fw-600">population:</span> ${this.numberWithCommas(data.population)}</p>
+                            <p><span class="fw-600">region:</span> ${data.region}</p>
+                            <p><span class="fw-600">sub region:</span> ${data.subregion}</p>
+                            <p><span class="fw-600">capital:</span> ${data.capital.join(', ')}</p>
+                        </div>
+                        <div class="details">
+                            <p><span class="fw-600">top level domain:</span> <span class='tld'>${data.tld[0]}</span></p>
+                            <p><span class="fw-600">currencies:</span> ${this.currencyName(data.currencies)}</p>
+                            <p><span class="fw-600">languages:</span> ${languages}</p>
+                        </div>
+                        <div class="borders"><span class="fw-600">border countries:</span><div class='borders__wrapper'>${bordersHtml}</div></div>
+                    </section >
+                    <figure class="flag"><img src="${data.flags['svg']}" alt="${data.flags['alt']}" loading="lazy"></figure>
+                </article >
             `;
+    }));
+    return html.join('');
+  }
+  getCountryParam() {
+    const urlParams = new URLSearchParams(location.search);
+    const param = urlParams.get('country');
+    return param.replace(/-/g, " ");
+  }
+  async getBordersHtml(borders) {
+    if (borders === undefined) {
+      return '<div class="bxs-bd">No Border Countries</div>';
+    }
+    const bordersHtml = await Promise.all(borders.map(async border => {
+      const data = await this.getBordersData(border);
+      return `
+                <li class="bxs-bd">
+                    <a href="/page/${data.toLowerCase()}" data-link>${data}</a>
+                </li>`;
+    }));
+    return bordersHtml.join('');
+  }
+  createBackBtn() {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.id = 'back-btn';
+    button.classList.add('bxs-bd');
+    button.innerText = "back";
+    button.insertAdjacentHTML("afterbegin", arrowLeft);
+    button.addEventListener("click", this.backBtnEvt);
+    document.getElementById("content").insertAdjacentElement('afterbegin', button);
+  }
+  async getBordersData(country) {
+    let url = `https://restcountries.com/v3.1/alpha?codes=${country.toLowerCase()}`;
+    const data = await this.getData(url);
+    return data[0].name['common'];
+  }
+  currencyName(obj) {
+    const values = Object.values(obj);
+    return values[0].name;
+  }
+  backBtnEvt() {
+    history.back();
+    setTimeout(() => {
+      wrapper.style.display = '';
+    }, 100);
+  }
+});
+
+/***/ }),
+
+/***/ "./src/PageView.js":
+/*!*************************!*\
+  !*** ./src/PageView.js ***!
+  \*************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _Page__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Page */ "./src/Page.js");
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (class extends _Page__WEBPACK_IMPORTED_MODULE_0__["default"] {
+  constructor(param) {
+    super();
+    console.log('param :>> ', param.country.replace(/-/g, " "));
+    this.params = this.getCountryParam(param.country.replace(/-/g, " "));
+  }
+  getCountryParam(param) {
+    console.log('param :>> ', param);
+    return param;
   }
 });
 
@@ -75,21 +185,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _AbstractView__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractView */ "./src/AbstractView.js");
+/* harmony import */ var _homepage__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./homepage */ "./src/homepage.js");
 
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (class extends _AbstractView__WEBPACK_IMPORTED_MODULE_0__["default"] {
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (class extends _homepage__WEBPACK_IMPORTED_MODULE_0__.HomePage {
   constructor() {
     super();
     this.region = location.pathname.substring(1);
     this.setTitle(this.region);
     this.url = `https://restcountries.com/v3.1/region/${this.region}`;
-  }
-  async initialize() {
-    const data = await this.getData(this.url);
-    this.setHtml(data);
-  }
-  async getHtml(data) {
-    return this.cardHtml(data);
   }
 });
 
@@ -105,18 +208,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _AbstractView__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractView */ "./src/AbstractView.js");
-/* harmony import */ var _details__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./details */ "./src/details.js");
-
-
 const searchInput = document.querySelector("#search");
 const searchForm = document.querySelector("#searchForm");
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (class extends _AbstractView__WEBPACK_IMPORTED_MODULE_0__["default"] {
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (class {
   constructor() {
-    super();
+    // super();
   }
   initialize() {
-    searchForm.addEventListener("submit", this.formSubmit.bind(this));
+    // searchForm.addEventListener("submit", this.formSubmit.bind(this));
     searchInput.addEventListener("keyup", this.searchInputEvt);
   }
   searchInputEvt(evt) {
@@ -131,130 +230,7 @@ const searchForm = document.querySelector("#searchForm");
       }
     }
   }
-  async formSubmit(evt) {
-    evt.preventDefault();
-    const country = searchInput.value;
-    searchForm.reset();
-    history.pushState({}, '', location.pathname);
-    const detailsPage = new _details__WEBPACK_IMPORTED_MODULE_1__.DetailsPage(country);
-    detailsPage.initialize();
-  }
 });
-
-/***/ }),
-
-/***/ "./src/details.js":
-/*!************************!*\
-  !*** ./src/details.js ***!
-  \************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   DetailsPage: () => (/* binding */ DetailsPage)
-/* harmony export */ });
-/* harmony import */ var _AbstractView__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractView */ "./src/AbstractView.js");
-
-const wrapper = document.querySelector(".wrapper");
-const arrowLeft = `<svg viewBox="0 0 32 32" height="23px" width="23px"><defs><style>.cls-1{fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px;}</style></defs><title/><g id="arrow-left"><line class="cls-1" x1="3" x2="29" y1="16" y2="16"/><line class="cls-1" x1="3" x2="7" y1="16" y2="11"/><line class="cls-1" x1="3" x2="7" y1="16" y2="21"/></g></svg>`;
-class DetailsPage extends _AbstractView__WEBPACK_IMPORTED_MODULE_0__["default"] {
-  constructor(country) {
-    super();
-    this.country = country;
-    this.url = `https://restcountries.com/v3.1/name/${country}?fullText=true`;
-    this.setTitle(country);
-  }
-  async initialize() {
-    wrapper.style.display = 'none';
-    const data = await this.getData(this.url);
-    this.data = data[0];
-    this.setHtml();
-  }
-  async setHtml() {
-    document.getElementById("content").innerHTML = '';
-    this.BackBtnElement();
-    if (this.data === undefined) {
-      const html = `
-                <article>
-                    <h1>Country does not exist!</h1>
-                </article>`;
-      document.getElementById("content").insertAdjacentHTML("beforeend", html);
-      return;
-    }
-    const html = await this.getHtml();
-    document.getElementById("content").insertAdjacentHTML('beforeend', html);
-    this.populateBorders(this.data);
-  }
-  async getHtml() {
-    const lastKey = Object.keys(this.data.name['nativeName']).pop();
-    const languages = Object.values(this.data.languages).join(', ');
-    return `
-            <article class="country_details">
-                <section>
-                    <header>
-                        <h1 class='fw-800'>${this.data.name['common']}</h1>
-                    </header>
-                    <div class="details">
-                        <p><span class="fw-600">native name:</span> ${this.data.name['nativeName'][lastKey]['common']}</p>
-                        <p><span class="fw-600">population:</span> ${this.numberWithCommas(this.data.population)}</p>
-                        <p><span class="fw-600">region:</span> ${this.data.region}</p>
-                        <p><span class="fw-600">sub region:</span> ${this.data.subregion}</p>
-                        <p><span class="fw-600">capital:</span> ${this.data.capital.join(', ')}</p>
-                    </div>
-                    <div class="details">
-                        <p><span class="fw-600">top level domain:</span> <span class='tld'>${this.data.tld[0]}</span></p>
-                        <p><span class="fw-600">currencies:</span> ${this.currencyName(this.data.currencies)}</p>
-                        <p><span class="fw-600">languages:</span> ${languages}</p>
-                    </div>
-                    <div class="borders"><span class="fw-600">border countries:</span><div class='borders__wrapper'></div></div>
-                </section >
-                <figure class="flag"><img src="${this.data.flags['svg']}" alt="${this.data.flags['alt']}" loading="lazy"></figure>
-            </article >
-        `;
-  }
-  BackBtnElement() {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.classList.add('back-btn', 'bxs-bd');
-    button.innerText = "back";
-    button.insertAdjacentHTML("afterbegin", arrowLeft);
-    button.addEventListener("click", this.backBtnEvt);
-    document.getElementById("content").insertAdjacentElement('afterbegin', button);
-  }
-  async getBordersData(country) {
-    let url = `https://restcountries.com/v3.1/alpha?codes=${country.toLowerCase()}`;
-    const data = await this.getData(url);
-    return data[0].name['common'];
-  }
-  async populateBorders() {
-    console.log('thisData :>> ', this.data);
-    const borderWrapper = document.querySelector(".borders__wrapper");
-    if (this.data.borders === undefined) {
-      borderWrapper.insertAdjacentHTML('afterbegin', '<span class="bxs-bd">No Border Countries</span>');
-      return;
-    }
-    this.data.borders.forEach(async country => {
-      const el = await this.getBordersData(country);
-      const html = `
-                <li class="bxs-bd">
-                    <a href="/${el.toLowerCase()}" data-link>${el}</a>
-                </li>`;
-      borderWrapper.insertAdjacentHTML("beforeend", html);
-    });
-  }
-  currencyName(obj) {
-    for (const key in obj) {
-      if (Object.prototype.hasOwnProperty.call(obj, key)) {
-        const el = obj[key];
-        return el.name;
-      }
-    }
-  }
-  backBtnEvt() {
-    history.back();
-    wrapper.style.display = '';
-  }
-}
 
 /***/ }),
 
@@ -277,12 +253,22 @@ class HomePage extends _AbstractView__WEBPACK_IMPORTED_MODULE_0__["default"] {
     this.setTitle("Home");
     this.url = url;
   }
-  async initialize() {
-    const data = await this.getData(this.url);
-    this.setHtml(data);
-  }
-  async getHtml(data) {
-    return this.cardHtml(data);
+  async getHtml() {
+    document.getElementById("content").innerHTML = '';
+    const dataPromise = await this.getData(this.url);
+    this.sortDataAlphabetically(dataPromise);
+    return dataPromise.map(data => {
+      const nameLowerCase = data.name['common'].toLowerCase();
+      return `<article id='${nameLowerCase}' class='country_card'>
+                <section>
+                    <h1 class="fw-800"><a id='country__link' href="/page/${nameLowerCase}" data-link>${data.name['common']}</a></h1>
+                    <p><span class="fw-600">population:</span> ${this.numberWithCommas(data.population)}</p>
+                    <p><span class="fw-600">region:</span> ${data.region}</p>
+                    <p><span class="fw-600">capital:</span> ${this.formatCapital(data)}</p>
+                </section>
+                <figure><img src=${data.flags['png']} alt="${data.flags['alt']}" loading="lazy"></figure>
+            </article>`;
+    }).join('');
   }
 }
 
@@ -296,71 +282,108 @@ class HomePage extends _AbstractView__WEBPACK_IMPORTED_MODULE_0__["default"] {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _style_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./style.css */ "./src/style.css");
-/* harmony import */ var _SearchForm__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./SearchForm */ "./src/SearchForm.js");
-/* harmony import */ var _theme__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./theme */ "./src/theme.js");
+/* harmony import */ var _Region__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Region */ "./src/Region.js");
+/* harmony import */ var _SearchForm__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./SearchForm */ "./src/SearchForm.js");
 /* harmony import */ var _homepage__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./homepage */ "./src/homepage.js");
 /* harmony import */ var _scroll__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./scroll */ "./src/scroll.js");
-/* harmony import */ var _Region__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Region */ "./src/Region.js");
+/* harmony import */ var _theme__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./theme */ "./src/theme.js");
+/* harmony import */ var _Page__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./Page */ "./src/Page.js");
+/* harmony import */ var _PageView__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./PageView */ "./src/PageView.js");
 
 
 
 
 
 
-const _ = new _theme__WEBPACK_IMPORTED_MODULE_2__.ThemeSwitcher();
-const form = new _SearchForm__WEBPACK_IMPORTED_MODULE_1__["default"]();
-const handleClickEvt = evt => {
-  evt.preventDefault();
+
+
+new _theme__WEBPACK_IMPORTED_MODULE_5__.ThemeSwitcher();
+const form = new _SearchForm__WEBPACK_IMPORTED_MODULE_2__["default"]();
+const searchForm = document.querySelector("#searchForm");
+const searchInput = document.querySelector("#search");
+const pathToRegex = path => new RegExp('^' + path.replace(/\//g, '\\/').replace(/:\w+/g, "(.+)") + "$");
+const activeLinkEvt = evt => {
   document.querySelectorAll(".dropdown_wrapper > a").forEach(link => {
-    link.classList.remove('active');
+    link.classList.remove("active");
+    evt.target.classList.add('active');
   });
-  evt.target.classList.add("active");
 };
 document.querySelectorAll(".dropdown_wrapper > a").forEach(link => {
-  link.addEventListener("click", handleClickEvt);
+  link.addEventListener("click", activeLinkEvt);
 });
 const navigateTo = url => {
   history.pushState({}, "", url);
   router();
 };
+const displaySpinner = () => {
+  document.querySelector(".loading_container").style.display = '';
+  document.querySelector(".loading_container").classList.remove("hidden");
+};
+const hideSpinner = () => {
+  setTimeout(() => {
+    document.querySelector(".container").classList.add('visible');
+    document.querySelector(".loading_container").style.display = 'none';
+  }, 1000);
+};
+const getParams = match => {
+  const values = match.result.slice(1);
+  const keys = Array.from(match.route.path.matchAll(/:(\w+)/g)).map(result => result[1]);
+  return Object.fromEntries(keys.map((key, i) => {
+    return [key, values[i]];
+  }));
+};
 const router = async () => {
+  document.querySelector(".wrapper").style.display = '';
+  displaySpinner();
   const routes = [{
     path: '/',
     view: _homepage__WEBPACK_IMPORTED_MODULE_3__.HomePage
   }, {
     path: '/africa',
-    view: _Region__WEBPACK_IMPORTED_MODULE_5__["default"]
+    view: _Region__WEBPACK_IMPORTED_MODULE_1__["default"]
   }, {
     path: '/america',
-    view: _Region__WEBPACK_IMPORTED_MODULE_5__["default"]
+    view: _Region__WEBPACK_IMPORTED_MODULE_1__["default"]
   }, {
     path: '/asia',
-    view: _Region__WEBPACK_IMPORTED_MODULE_5__["default"]
+    view: _Region__WEBPACK_IMPORTED_MODULE_1__["default"]
   }, {
     path: '/europe',
-    view: _Region__WEBPACK_IMPORTED_MODULE_5__["default"]
+    view: _Region__WEBPACK_IMPORTED_MODULE_1__["default"]
   }, {
     path: '/oceania',
-    view: _Region__WEBPACK_IMPORTED_MODULE_5__["default"]
+    view: _Region__WEBPACK_IMPORTED_MODULE_1__["default"]
+  },
+  // query string page
+  {
+    path: '/page',
+    view: _Page__WEBPACK_IMPORTED_MODULE_6__["default"]
+  }, {
+    path: '/page/:country',
+    view: _PageView__WEBPACK_IMPORTED_MODULE_7__["default"]
   }];
   const potentialMatches = routes.map(route => {
     return {
       route: route,
-      isMatch: location.pathname == route.path
+      result: location.pathname.match(pathToRegex(route.path))
     };
   });
-  let match = potentialMatches.find(potentialMatch => potentialMatch.isMatch);
+  let match = potentialMatches.find(potentialMatch => potentialMatch.result !== null);
   if (!match) {
     match = {
       route: routes[0],
-      isMatch: true
+      result: [location.pathname]
     };
   }
-  const view = new match.route.view();
-  view.initialize();
+  const view = new match.route.view(getParams(match));
+  document.getElementById("content").insertAdjacentHTML("beforeend", await view.getHtml());
+  hideSpinner();
 };
 window.addEventListener("popstate", router);
 document.addEventListener("DOMContentLoaded", async () => {
+  window.addEventListener('load', () => {
+    document.querySelector(".dropdown_wrapper > a:first-of-type").classList.add("active");
+  });
   window.scrollBy({
     top: 20,
     left: 0,
@@ -370,20 +393,31 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.body.addEventListener("click", evt => {
     if (evt.target.matches("[data-link]")) {
       evt.preventDefault();
-      navigateTo(evt.target.href);
+      const clickedLink = evt.target.href;
+      navigateTo(clickedLink);
     }
   });
+  searchForm.addEventListener('submit', evt => {
+    evt.preventDefault();
+    const country = searchInput.value;
+    searchForm.reset();
+    const formatCountryName = countryName => {
+      if (/\s/g.test(countryName)) {
+        return countryName.replace(/\s+/g, '+');
+      }
+      return countryName;
+    };
+    const url = `/page?country=${formatCountryName(country).toLowerCase()}`;
+    navigateTo(url);
+  });
   router();
-  document.getElementById('searchForm').reset();
+  searchForm.reset();
   const dropdownBtn = document.querySelector(".dropdown_btn");
   const scroll = new _scroll__WEBPACK_IMPORTED_MODULE_4__.Scroll();
-  setTimeout(() => {
-    document.querySelector(".loading_container").classList.add("hidden");
-    document.querySelector(".container").classList.add('visible');
-    setTimeout(() => {
-      document.querySelector(".loading_container").style.display = 'none';
-    }, 100);
-  }, 1000);
+  const btn = document.getElementById("back_top");
+  window.addEventListener("scroll", () => {
+    scroll.displayButtonOnScroll(btn);
+  });
   dropdownBtn.addEventListener("click", function () {
     dropdownBtn.classList.toggle("expanded");
     setTimeout(() => {
@@ -413,19 +447,19 @@ class Scroll {
       bottom: "3em",
       right: "2em"
     });
-    window.addEventListener("scroll", () => {
-      this.displayButtonOnScroll();
-    });
   }
-  displayButtonOnScroll() {
-    const btn = document.getElementById("back_top");
-    if (btn != null) {
-      if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-        btn.style.display = 'block';
-      } else {
-        btn.style.display = 'none';
-      }
+  displayButtonOnScroll(btn) {
+    // console.log('btn :>> ', btn);
+
+    // const btn = document.getElementById("back_top");
+    // if (btn != null)
+    // {
+    if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+      btn.style.display = 'block';
+    } else {
+      btn.style.display = 'none';
     }
+    // }
   }
   backToTopButton(_ref) {
     let {
@@ -440,7 +474,7 @@ class Scroll {
     button.style.right = right;
     button.style.display = 'none';
     button.addEventListener("click", this.backToTopEvt, false);
-    content.insertAdjacentElement("beforeend", button);
+    document.getElementById("content").appendChild(button);
   }
   backToTopEvt() {
     document.body.scrollTop = 0;
