@@ -1,17 +1,12 @@
 "use strict";
-(self["webpackChunkrest_countries_api_main"] = self["webpackChunkrest_countries_api_main"] || []).push([["main"],{
+(self["webpackChunkrest_countries_api_main"] = self["webpackChunkrest_countries_api_main"] || []).push([[792],{
 
-/***/ "./src/AbstractView.js":
-/*!*****************************!*\
-  !*** ./src/AbstractView.js ***!
-  \*****************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ 385:
+/***/ (() => {
 
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (class {
+
+;// CONCATENATED MODULE: ./src/AbstractView.js
+/* harmony default export */ const AbstractView = (class {
   constructor() {}
   setTitle(title) {
     title = title.charAt(0).toUpperCase() + title.slice(1);
@@ -39,24 +34,168 @@ __webpack_require__.r(__webpack_exports__);
     return data.capital.join(', ');
   }
 });
+;// CONCATENATED MODULE: ./src/homepage.js
 
-/***/ }),
+let url = 'https://restcountries.com/v3.1/all?fields=name,population,region,capital,flags';
+class HomePage extends AbstractView {
+  constructor() {
+    super();
+    this.setTitle("Home");
+    this.url = url;
+  }
+  async getHtml() {
+    document.getElementById("content").innerHTML = '';
+    document.getElementById("content").classList.remove("page");
+    const dataPromise = await this.getData(this.url);
+    this.sortDataAlphabetically(dataPromise);
+    return dataPromise.map(data => {
+      const nameLowerCase = data.name['common'].replace(/\s+/g, '-').toLowerCase();
+      return `<article id='${nameLowerCase}' class='country_card'>
+                <section>
+                    <h1 class="fw-800"><a id='country__link' href="/page/${nameLowerCase}" data-link>${data.name['common']}</a></h1>
+                    <p><span class="fw-600">population:</span> ${this.numberWithCommas(data.population)}</p>
+                    <p><span class="fw-600">region:</span> ${data.region}</p>
+                    <p><span class="fw-600">capital:</span> ${this.formatCapital(data)}</p>
+                </section>
+                <figure><img src=${data.flags['png']} alt="${data.flags['alt']}" loading="lazy"></figure>
+            </article>`;
+    }).join('');
+  }
+}
+;// CONCATENATED MODULE: ./src/Region.js
 
-/***/ "./src/Page.js":
-/*!*********************!*\
-  !*** ./src/Page.js ***!
-  \*********************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/* harmony default export */ const Region = (class extends HomePage {
+  constructor() {
+    super();
+    this.region = location.pathname.substring(1);
+    this.setTitle(this.region);
+    this.url = `https://restcountries.com/v3.1/region/${this.region}`;
+  }
+});
+;// CONCATENATED MODULE: ./src/SearchForm.js
+const searchInput = document.querySelector("#search");
+const searchForm = document.querySelector("#searchForm");
+/* harmony default export */ const SearchForm = (class {
+  constructor() {
+    // super();
+  }
+  initialize() {
+    // searchForm.addEventListener("submit", this.formSubmit.bind(this));
+    searchInput.addEventListener("keyup", this.searchInputEvt);
+  }
+  searchInputEvt(evt) {
+    evt.preventDefault();
+    const filter = searchInput.value.toLowerCase();
+    const articles = document.querySelectorAll("#content > article");
+    for (let i = 0; i < articles.length; i++) {
+      if (articles[i].id.indexOf(filter) > -1) {
+        articles[i].style.display = "";
+      } else {
+        articles[i].style.display = "none";
+      }
+    }
+  }
+});
+;// CONCATENATED MODULE: ./src/scroll.js
+class Scroll {
+  constructor() {
+    this.initialize();
+  }
+  initialize() {
+    this.backToTopButton({
+      bottom: "3em",
+      right: "2em"
+    });
+  }
+  displayButtonOnScroll(btn) {
+    // console.log('btn :>> ', btn);
 
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _AbstractView__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractView */ "./src/AbstractView.js");
+    // const btn = document.getElementById("back_top");
+    // if (btn != null)
+    // {
+    if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+      btn.style.display = 'block';
+    } else {
+      btn.style.display = 'none';
+    }
+    // }
+  }
+  backToTopButton(_ref) {
+    let {
+      bottom,
+      right
+    } = _ref;
+    const button = document.createElement("button");
+    button.type = "button";
+    button.id = "back_top";
+    button.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor"><path class="cls-1" d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm4.707,9.707a1,1,0,0,1-1.414,0L13,8.414V18a1,1,0,0,1-2,0V8.414L8.707,10.707A1,1,0,1,1,7.293,9.293l4-4a1,1,0,0,1,1.414,0l4,4A1,1,0,0,1,16.707,10.707Z"/></svg>`;
+    button.style.bottom = bottom;
+    button.style.right = right;
+    button.style.display = 'none';
+    button.addEventListener("click", this.backToTopEvt, false);
+    document.getElementById("content").appendChild(button);
+  }
+  backToTopEvt() {
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+  }
+}
+;// CONCATENATED MODULE: ./src/theme.js
+/**
+* Utility function to calculate the current theme setting.
+* Look for a local storage value.
+* Fall back to system setting.
+* Fall back to light mode.
+*/
+const darkHtml = `<img src="./assets/icons/moon_icon.png" alt="dark button icon"> dark mode`;
+const lightHtml = `<img src="./assets/icons/sun_icon.png" alt="light button icon"> light mode`;
+const themeBtn = document.querySelector("[data-theme-toggle]");
+const localStorageTheme = localStorage.getItem("theme");
+const systemSettingDark = window.matchMedia("(prefers-color-scheme: dark)");
+function calcSettingThemeStr(_ref) {
+  let {
+    localStorageTheme,
+    systemSettingDark
+  } = _ref;
+  if (localStorageTheme !== null) {
+    return localStorageTheme;
+  }
+  if (systemSettingDark.matches) {
+    return "dark";
+  }
+  return "light";
+}
+let currentThemeSetting = calcSettingThemeStr({
+  localStorageTheme: localStorageTheme,
+  systemSettingDark: systemSettingDark
+});
+class ThemeSwitcher {
+  constructor() {
+    this.initialize();
+  }
+  initialize() {
+    this.updateThemeOnHtml(currentThemeSetting);
+    themeBtn.innerHTML = currentThemeSetting === "dark" ? lightHtml : darkHtml;
+    themeBtn.addEventListener("click", this.handleToggleEvt.bind(this));
+  }
+  handleToggleEvt() {
+    const newTheme = currentThemeSetting === "dark" ? "light" : "dark";
+    const aria = newTheme === "dark" ? "Change to light theme" : "Change to dark theme";
+    themeBtn.innerHTML = newTheme === "dark" ? lightHtml : darkHtml;
+    themeBtn.setAttribute("aria-label", aria);
+    this.updateThemeOnHtml(newTheme);
+    localStorage.setItem("theme", newTheme);
+    currentThemeSetting = newTheme;
+  }
+  updateThemeOnHtml(theme) {
+    document.querySelector("html").setAttribute("data-theme", theme);
+  }
+}
+;// CONCATENATED MODULE: ./src/Page.js
 
 const wrapper = document.querySelector(".wrapper");
 const arrowLeft = `<svg viewBox="0 0 32 32" height="23px" width="23px"><defs><style>.cls-1{fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px;}</style></defs><title/><g id="arrow-left"><line class="cls-1" x1="3" x2="29" y1="16" y2="16"/><line class="cls-1" x1="3" x2="7" y1="16" y2="11"/><line class="cls-1" x1="3" x2="7" y1="16" y2="21"/></g></svg>`;
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (class extends _AbstractView__WEBPACK_IMPORTED_MODULE_0__["default"] {
+/* harmony default export */ const Page = (class extends AbstractView {
   constructor() {
     super();
     this.params = this.getCountryParam();
@@ -143,22 +282,9 @@ const arrowLeft = `<svg viewBox="0 0 32 32" height="23px" width="23px"><defs><st
     history.back();
   }
 });
+;// CONCATENATED MODULE: ./src/PageView.js
 
-/***/ }),
-
-/***/ "./src/PageView.js":
-/*!*************************!*\
-  !*** ./src/PageView.js ***!
-  \*************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _Page__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Page */ "./src/Page.js");
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (class extends _Page__WEBPACK_IMPORTED_MODULE_0__["default"] {
+/* harmony default export */ const PageView = (class extends Page {
   constructor(param) {
     super();
     this.params = this.getCountryParam(param.country);
@@ -167,124 +293,7 @@ __webpack_require__.r(__webpack_exports__);
     return param;
   }
 });
-
-/***/ }),
-
-/***/ "./src/Region.js":
-/*!***********************!*\
-  !*** ./src/Region.js ***!
-  \***********************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _homepage__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./homepage */ "./src/homepage.js");
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (class extends _homepage__WEBPACK_IMPORTED_MODULE_0__.HomePage {
-  constructor() {
-    super();
-    this.region = location.pathname.substring(1);
-    this.setTitle(this.region);
-    this.url = `https://restcountries.com/v3.1/region/${this.region}`;
-  }
-});
-
-/***/ }),
-
-/***/ "./src/SearchForm.js":
-/*!***************************!*\
-  !*** ./src/SearchForm.js ***!
-  \***************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-const searchInput = document.querySelector("#search");
-const searchForm = document.querySelector("#searchForm");
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (class {
-  constructor() {
-    // super();
-  }
-  initialize() {
-    // searchForm.addEventListener("submit", this.formSubmit.bind(this));
-    searchInput.addEventListener("keyup", this.searchInputEvt);
-  }
-  searchInputEvt(evt) {
-    evt.preventDefault();
-    const filter = searchInput.value.toLowerCase();
-    const articles = document.querySelectorAll("#content > article");
-    for (let i = 0; i < articles.length; i++) {
-      if (articles[i].id.indexOf(filter) > -1) {
-        articles[i].style.display = "";
-      } else {
-        articles[i].style.display = "none";
-      }
-    }
-  }
-});
-
-/***/ }),
-
-/***/ "./src/homepage.js":
-/*!*************************!*\
-  !*** ./src/homepage.js ***!
-  \*************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   HomePage: () => (/* binding */ HomePage)
-/* harmony export */ });
-/* harmony import */ var _AbstractView__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractView */ "./src/AbstractView.js");
-
-let url = 'https://restcountries.com/v3.1/all?fields=name,population,region,capital,flags';
-class HomePage extends _AbstractView__WEBPACK_IMPORTED_MODULE_0__["default"] {
-  constructor() {
-    super();
-    this.setTitle("Home");
-    this.url = url;
-  }
-  async getHtml() {
-    document.getElementById("content").innerHTML = '';
-    document.getElementById("content").classList.remove("page");
-    const dataPromise = await this.getData(this.url);
-    this.sortDataAlphabetically(dataPromise);
-    return dataPromise.map(data => {
-      const nameLowerCase = data.name['common'].replace(/\s+/g, '-').toLowerCase();
-      return `<article id='${nameLowerCase}' class='country_card'>
-                <section>
-                    <h1 class="fw-800"><a id='country__link' href="/page/${nameLowerCase}" data-link>${data.name['common']}</a></h1>
-                    <p><span class="fw-600">population:</span> ${this.numberWithCommas(data.population)}</p>
-                    <p><span class="fw-600">region:</span> ${data.region}</p>
-                    <p><span class="fw-600">capital:</span> ${this.formatCapital(data)}</p>
-                </section>
-                <figure><img src=${data.flags['png']} alt="${data.flags['alt']}" loading="lazy"></figure>
-            </article>`;
-    }).join('');
-  }
-}
-
-/***/ }),
-
-/***/ "./src/index.js":
-/*!**********************!*\
-  !*** ./src/index.js ***!
-  \**********************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _style_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./style.css */ "./src/style.css");
-/* harmony import */ var _Region__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Region */ "./src/Region.js");
-/* harmony import */ var _SearchForm__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./SearchForm */ "./src/SearchForm.js");
-/* harmony import */ var _homepage__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./homepage */ "./src/homepage.js");
-/* harmony import */ var _scroll__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./scroll */ "./src/scroll.js");
-/* harmony import */ var _theme__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./theme */ "./src/theme.js");
-/* harmony import */ var _Page__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./Page */ "./src/Page.js");
-/* harmony import */ var _PageView__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./PageView */ "./src/PageView.js");
+;// CONCATENATED MODULE: ./src/index.js
 
 
 
@@ -293,10 +302,10 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-new _theme__WEBPACK_IMPORTED_MODULE_5__.ThemeSwitcher();
-const form = new _SearchForm__WEBPACK_IMPORTED_MODULE_2__["default"]();
-const searchForm = document.querySelector("#searchForm");
-const searchInput = document.querySelector("#search");
+new ThemeSwitcher();
+const src_form = new SearchForm();
+const src_searchForm = document.querySelector("#searchForm");
+const src_searchInput = document.querySelector("#search");
 const pathToRegex = path => new RegExp('^' + path.replace(/\//g, '\\/').replace(/:\w+/g, "(.+)") + "$");
 const activeLinkEvt = evt => {
   document.querySelectorAll(".dropdown_wrapper > a").forEach(link => {
@@ -332,30 +341,30 @@ const router = async () => {
   displaySpinner();
   const routes = [{
     path: '/',
-    view: _homepage__WEBPACK_IMPORTED_MODULE_3__.HomePage
+    view: HomePage
   }, {
     path: '/africa',
-    view: _Region__WEBPACK_IMPORTED_MODULE_1__["default"]
+    view: Region
   }, {
     path: '/america',
-    view: _Region__WEBPACK_IMPORTED_MODULE_1__["default"]
+    view: Region
   }, {
     path: '/asia',
-    view: _Region__WEBPACK_IMPORTED_MODULE_1__["default"]
+    view: Region
   }, {
     path: '/europe',
-    view: _Region__WEBPACK_IMPORTED_MODULE_1__["default"]
+    view: Region
   }, {
     path: '/oceania',
-    view: _Region__WEBPACK_IMPORTED_MODULE_1__["default"]
+    view: Region
   },
   // query string page
   {
     path: '/page',
-    view: _Page__WEBPACK_IMPORTED_MODULE_6__["default"]
+    view: Page
   }, {
     path: '/page/:country',
-    view: _PageView__WEBPACK_IMPORTED_MODULE_7__["default"]
+    view: PageView
   }];
   const potentialMatches = routes.map(route => {
     return {
@@ -384,7 +393,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     left: 0,
     behavior: 'smooth'
   });
-  form.initialize();
+  src_form.initialize();
   document.body.addEventListener("click", evt => {
     if (evt.target.matches("[data-link]")) {
       evt.preventDefault();
@@ -392,10 +401,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       navigateTo(clickedLink);
     }
   });
-  searchForm.addEventListener('submit', evt => {
+  src_searchForm.addEventListener('submit', evt => {
     evt.preventDefault();
-    const country = searchInput.value;
-    searchForm.reset();
+    const country = src_searchInput.value;
+    src_searchForm.reset();
     const formatCountryName = countryName => {
       if (/\s/g.test(countryName)) {
         return countryName.replace(/\s+/g, '-');
@@ -406,9 +415,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     navigateTo(url);
   });
   router();
-  searchForm.reset();
+  src_searchForm.reset();
   const dropdownBtn = document.querySelector(".dropdown_btn");
-  const scroll = new _scroll__WEBPACK_IMPORTED_MODULE_4__.Scroll();
+  const scroll = new Scroll();
   const btn = document.getElementById("back_top");
   window.addEventListener("scroll", () => {
     scroll.displayButtonOnScroll(btn);
@@ -421,143 +430,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 });
 
-/***/ }),
-
-/***/ "./src/scroll.js":
-/*!***********************!*\
-  !*** ./src/scroll.js ***!
-  \***********************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Scroll: () => (/* binding */ Scroll)
-/* harmony export */ });
-class Scroll {
-  constructor() {
-    this.initialize();
-  }
-  initialize() {
-    this.backToTopButton({
-      bottom: "3em",
-      right: "2em"
-    });
-  }
-  displayButtonOnScroll(btn) {
-    // console.log('btn :>> ', btn);
-
-    // const btn = document.getElementById("back_top");
-    // if (btn != null)
-    // {
-    if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-      btn.style.display = 'block';
-    } else {
-      btn.style.display = 'none';
-    }
-    // }
-  }
-  backToTopButton(_ref) {
-    let {
-      bottom,
-      right
-    } = _ref;
-    const button = document.createElement("button");
-    button.type = "button";
-    button.id = "back_top";
-    button.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor"><path class="cls-1" d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm4.707,9.707a1,1,0,0,1-1.414,0L13,8.414V18a1,1,0,0,1-2,0V8.414L8.707,10.707A1,1,0,1,1,7.293,9.293l4-4a1,1,0,0,1,1.414,0l4,4A1,1,0,0,1,16.707,10.707Z"/></svg>`;
-    button.style.bottom = bottom;
-    button.style.right = right;
-    button.style.display = 'none';
-    button.addEventListener("click", this.backToTopEvt, false);
-    document.getElementById("content").appendChild(button);
-  }
-  backToTopEvt() {
-    document.body.scrollTop = 0;
-    document.documentElement.scrollTop = 0;
-  }
-}
-
-/***/ }),
-
-/***/ "./src/theme.js":
-/*!**********************!*\
-  !*** ./src/theme.js ***!
-  \**********************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   ThemeSwitcher: () => (/* binding */ ThemeSwitcher)
-/* harmony export */ });
-/**
-* Utility function to calculate the current theme setting.
-* Look for a local storage value.
-* Fall back to system setting.
-* Fall back to light mode.
-*/
-const darkHtml = `<img src="./assets/icons/moon_icon.png" alt="dark button icon"> dark mode`;
-const lightHtml = `<img src="./assets/icons/sun_icon.png" alt="light button icon"> light mode`;
-const themeBtn = document.querySelector("[data-theme-toggle]");
-const localStorageTheme = localStorage.getItem("theme");
-const systemSettingDark = window.matchMedia("(prefers-color-scheme: dark)");
-function calcSettingThemeStr(_ref) {
-  let {
-    localStorageTheme,
-    systemSettingDark
-  } = _ref;
-  if (localStorageTheme !== null) {
-    return localStorageTheme;
-  }
-  if (systemSettingDark.matches) {
-    return "dark";
-  }
-  return "light";
-}
-let currentThemeSetting = calcSettingThemeStr({
-  localStorageTheme: localStorageTheme,
-  systemSettingDark: systemSettingDark
-});
-class ThemeSwitcher {
-  constructor() {
-    this.initialize();
-  }
-  initialize() {
-    this.updateThemeOnHtml(currentThemeSetting);
-    themeBtn.innerHTML = currentThemeSetting === "dark" ? lightHtml : darkHtml;
-    themeBtn.addEventListener("click", this.handleToggleEvt.bind(this));
-  }
-  handleToggleEvt() {
-    const newTheme = currentThemeSetting === "dark" ? "light" : "dark";
-    const aria = newTheme === "dark" ? "Change to light theme" : "Change to dark theme";
-    themeBtn.innerHTML = newTheme === "dark" ? lightHtml : darkHtml;
-    themeBtn.setAttribute("aria-label", aria);
-    this.updateThemeOnHtml(newTheme);
-    localStorage.setItem("theme", newTheme);
-    currentThemeSetting = newTheme;
-  }
-  updateThemeOnHtml(theme) {
-    document.querySelector("html").setAttribute("data-theme", theme);
-  }
-}
-
-/***/ }),
-
-/***/ "./src/style.css":
-/*!***********************!*\
-  !*** ./src/style.css ***!
-  \***********************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-// extracted by mini-css-extract-plugin
-
-
 /***/ })
 
 },
 /******/ __webpack_require__ => { // webpackRuntimeModules
 /******/ var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-/******/ var __webpack_exports__ = (__webpack_exec__("./src/index.js"));
+/******/ var __webpack_exports__ = (__webpack_exec__(385));
 /******/ }
 ]);
 //# sourceMappingURL=main.js.map
