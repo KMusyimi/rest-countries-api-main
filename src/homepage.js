@@ -13,11 +13,15 @@ export class HomePage extends AbstractView
     async getHtml()
     {
         document.getElementById("content").innerHTML = '';
+        document.getElementById("content").classList.remove("page");
+
         const dataPromise = await this.getData(this.url);
+
         this.sortDataAlphabetically(dataPromise);
+
         return dataPromise.map(data =>
         {
-            const nameLowerCase = data.name['common'].toLowerCase();
+            const nameLowerCase = data.name['common'].replace(/\s+/g, '-').toLowerCase();
             return `<article id='${nameLowerCase}' class='country_card'>
                 <section>
                     <h1 class="fw-800"><a id='country__link' href="/page/${nameLowerCase}" data-link>${data.name['common']}</a></h1>

@@ -22,7 +22,7 @@ export default class
     {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
- 
+
     sortDataAlphabetically(arr)
     {
         arr.sort(function (a, b)
@@ -37,6 +37,6 @@ export default class
             return 'has no capital';
         }
         return data.capital.join(', ');
-
     }
+    
 }

@@ -116,6 +116,10 @@ img {
     opacity: 1;
 }
 
+.container:has(>.main.page) .wrapper{
+    display: none;
+}
+
 .header,
 .main,
 .wrapper {
@@ -285,6 +289,7 @@ img {
     width: 100%;
     padding: 2em 1.85em;
 }
+
 
 .country_card {
     display: flex;

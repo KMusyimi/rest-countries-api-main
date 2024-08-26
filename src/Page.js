@@ -15,25 +15,29 @@ export default class extends AbstractView
     
     async getHtml()
     {
-        this.setTitle(this.params);
-
-        this.url = `https://restcountries.com/v3.1/name/${this.params}?fullText=true`;
-
-        wrapper.style.display = 'none';
+        document.getElementById("content").classList.add("page");
         document.getElementById("content").innerHTML = '';
 
+        this.setTitle(this.params);
+        this.url = `https://restcountries.com/v3.1/name/${this.params}?fullText=true`;
+        
         this.createBackBtn();
-        console.log('this.url :>> ', this.url);
+
         const dataPromise = await this.getData(this.url);
+
         if (dataPromise.status === 404)
         {
-            return `<article><h1>Country not found!</h1></article>`;
+            return `<article><h1>Country data is currently not available!</h1></article>`;
         }
+
         const html = await Promise.all(dataPromise.map(async data =>
         {
             const lastKey = Object.keys(data.name['nativeName']).pop();
             const languages = Object.values(data.languages).join(', ');
-            const bordersHtml = await this.getBordersHtml(data.borders)
+            const bordersHtml = await this.getBordersHtml(data.borders);
+
+            const tld = data => data.tld === undefined ? "No available data" : data.tld[0];
+           
             return `
                 <article class="country_details">
                     <section>
@@ -48,7 +52,7 @@ export default class extends AbstractView
                             <p><span class="fw-600">capital:</span> ${data.capital.join(', ')}</p>
                         </div>
                         <div class="details">
-                            <p><span class="fw-600">top level domain:</span> <span class='tld'>${data.tld[0]}</span></p>
+                            <p><span class="fw-600">top level domain:</span> <span class='tld'>${tld(data)}</span></p>
                             <p><span class="fw-600">currencies:</span> ${this.currencyName(data.currencies)}</p>
                             <p><span class="fw-600">languages:</span> ${languages}</p>
                         </div>
@@ -78,7 +82,7 @@ export default class extends AbstractView
             const data = await this.getBordersData(border);
             return `
                 <li class="bxs-bd">
-                    <a href="/page/${data.toLowerCase()}" data-link>${data}</a>
+                    <a href="/page/${data.replace(/\s+/g, '-').toLowerCase()}" data-link>${data}</a>
                 </li>`;
         }));
         return bordersHtml.join('');
@@ -108,9 +112,5 @@ export default class extends AbstractView
     backBtnEvt()
     {
         history.back();
-        setTimeout(() =>
-        {
-            wrapper.style.display = '';
-        }, 100);
     }
 }

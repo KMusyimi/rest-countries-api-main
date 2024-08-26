@@ -53,16 +53,15 @@ const hideSpinner = () =>
 const getParams = match =>
 {
     const values = match.result.slice(1);
-    const keys = Array.from(match.route.path.matchAll(/:(\w+)/g)).map(result => result[1] );   
+    const keys = Array.from(match.route.path.matchAll(/:(\w+)/g)).map(result => result[1]);
     return Object.fromEntries(keys.map((key, i) =>
     {
-        return [key, values[i]]
+        return [key, values[i].replace(/-/g, " ")]
     }));
 }
 
 const router = async () =>
 {
-    document.querySelector(".wrapper").style.display = '';
     displaySpinner();
     const routes = [
         { path: '/', view: HomePage },
@@ -127,7 +126,7 @@ document.addEventListener("DOMContentLoaded", async () =>
         {
             if (/\s/g.test(countryName))
             {
-                return countryName.replace(/\s+/g, '+');
+                return countryName.replace(/\s+/g, '-');
             }
             return countryName;
         }
