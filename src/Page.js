@@ -12,7 +12,7 @@ export default class extends AbstractView
         super();
         this.params = this.getCountryParam();
     }
-    
+
     async getHtml()
     {
         document.getElementById("content").classList.add("page");
@@ -20,7 +20,7 @@ export default class extends AbstractView
 
         this.setTitle(this.params);
         this.url = `https://restcountries.com/v3.1/name/${this.params}?fullText=true`;
-        
+
         this.createBackBtn();
 
         const dataPromise = await this.getData(this.url);
@@ -37,7 +37,7 @@ export default class extends AbstractView
             const bordersHtml = await this.getBordersHtml(data.borders);
 
             const tld = data => data.tld === undefined ? "No available data" : data.tld[0];
-           
+
             return `
                 <article class="country_details">
                     <section>
