@@ -33,26 +33,41 @@ export class ThemeSwitcher
     {
         this.initialize();
     }
+    themeImgElement(theme){
+        const img = document.createElement('img');
+
+        img.src = theme === 'dark' ? './assets/icons/sun_icon.png' : './assets/icons/moon_icon.png';
+        img.alt = theme === 'dark' ? 'light button icon' : 'dark button icon';
+
+        return img;
+
+    }
     initialize()
     {
         this.updateThemeOnHtml(currentThemeSetting);
-        themeBtn.innerHTML = currentThemeSetting === "dark"? lightHtml : darkHtml;
+       
+        const img = this.themeImgElement(currentThemeSetting);
+        
+        themeBtn.textContent = currentThemeSetting === 'dark' ? 'light mode' : 'dark mode';
+        themeBtn.insertAdjacentElement("afterbegin", img);
+
         themeBtn.addEventListener("click", this.handleToggleEvt.bind(this));
     }
-   
+
     handleToggleEvt()
     {
         const newTheme = currentThemeSetting === "dark" ? "light" : "dark";
         const aria = newTheme === "dark" ? "Change to light theme" : "Change to dark theme";
         themeBtn.innerHTML = newTheme === "dark" ? lightHtml : darkHtml;
-        
+
         themeBtn.setAttribute("aria-label", aria);
         this.updateThemeOnHtml(newTheme);
 
         localStorage.setItem("theme", newTheme);
         currentThemeSetting = newTheme;
     }
-    updateThemeOnHtml(theme){
+    updateThemeOnHtml(theme)
+    {
         document.querySelector("html").setAttribute("data-theme", theme);
     }
 }

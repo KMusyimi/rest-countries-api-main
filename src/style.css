@@ -331,7 +331,7 @@ img {
 }
 
 .country_card>figure img {
-    object-fit: cover;
+    object-fit: fill;
     border-radius: inherit;
     height: 100%;
     width: 100%;

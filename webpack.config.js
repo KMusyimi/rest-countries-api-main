@@ -63,9 +63,7 @@ module.exports = {
         runtimeChunk: 'single',
         minimize: true,
         minimizer: [
-            new CssMinimizerPlugin({
-                parallel: 4,
-            }),
+            new CssMinimizerPlugin(),
         ]
        
     }

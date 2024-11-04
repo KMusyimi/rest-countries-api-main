@@ -30,7 +30,7 @@ document.querySelectorAll(".dropdown_wrapper > a").forEach(link =>
 })
 
 
-const navigateTo = url =>
+const navigateTo = (url) =>
 {
     history.pushState({}, "", url);
     router();
@@ -119,6 +119,7 @@ document.addEventListener("DOMContentLoaded", async () =>
 
     searchForm.addEventListener('submit', evt =>
     {
+        console.log(location.pathname);
         evt.preventDefault();
         const country = searchInput.value;
         searchForm.reset();
