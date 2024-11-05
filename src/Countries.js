@@ -45,7 +45,7 @@ export class Countries extends AbstractView
                     <h1 class="fw-800"><a id='country__link' href="/page/${nameLowerCase}" data-link>${data.name['common']}</a></h1>
                     <p><span class="fw-600">population:</span> ${this.numberWithCommas(data.population)}</p>
                     <p><span class="fw-600">region:</span> ${data.region}</p>
-                    <p><span class="fw-600">capital:</span> ${this.formatCapital(data)}</p>
+                    <p><span class="fw-600">capital:</span> ${data.capital?.join(',')|| ' no capital city'}</p>
                 </section>
                 <figure><img src=${data.flags['png']} alt="${data.flags['alt']}" loading="lazy"></figure>
             </article>`;

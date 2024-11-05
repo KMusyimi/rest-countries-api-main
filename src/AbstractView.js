@@ -32,10 +32,6 @@ export default class
     }
     formatCapital(data)
     {
-        if (data.capital === undefined)
-        {
-            return 'has no capital';
-        }
         return data.capital.join(', ');
     }
     

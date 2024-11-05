@@ -32,8 +32,8 @@ export default class extends AbstractView
 
         const html = await Promise.all(dataPromise.map(async data =>
         {
-            const lastKey = Object.keys(data.name['nativeName']).pop();
-            const languages = Object.values(data.languages).join(', ');
+            const lastKey = data.name['nativeName'] && Object.keys(data.name['nativeName']).pop();
+            const languages = data.languages && Object.values(data.languages).join(', ');
             const bordersHtml = await this.getBordersHtml(data.borders);
 
             const tld = data => data.tld === undefined ? "No available data" : data.tld[0];
@@ -45,16 +45,17 @@ export default class extends AbstractView
                             <h1 class='fw-800'>${data.name['common']}</h1>
                         </header>
                         <div class="details">
-                            <p><span class="fw-600">native name:</span> ${data.name['nativeName'][lastKey]['common']}</p>
+                            <p><span class="fw-600">native name:</span> 
+                            ${data.name['nativeName'] ? data.name['nativeName'][lastKey]['common'] : 'no native name'}</p>
                             <p><span class="fw-600">population:</span> ${this.numberWithCommas(data.population)}</p>
-                            <p><span class="fw-600">region:</span> ${data.region}</p>
-                            <p><span class="fw-600">sub region:</span> ${data.subregion}</p>
-                            <p><span class="fw-600">capital:</span> ${data.capital.join(', ')}</p>
+                            <p><span class="fw-600">region:</span> ${data.region ? data.region : 'no region'}</p>
+                            <p><span class="fw-600">sub region:</span> ${data.subregion ? data.subregion : "no sub region"}</p>
+                            <p><span class="fw-600">capital:</span> ${data.capital?.join(', ') || "no capital"}</p>
                         </div>
                         <div class="details">
                             <p><span class="fw-600">top level domain:</span> <span class='tld'>${tld(data)}</span></p>
                             <p><span class="fw-600">currencies:</span> ${this.currencyName(data.currencies)}</p>
-                            <p><span class="fw-600">languages:</span> ${languages}</p>
+                            <p><span class="fw-600">languages:</span> ${languages ? languages : 'no languages'}</p>
                         </div>
                         <div class="borders"><span class="fw-600">border countries:</span><div class='borders__wrapper'>${bordersHtml}</div></div>
                     </section >
@@ -107,8 +108,12 @@ export default class extends AbstractView
     }
     currencyName(obj)
     {
-        const values = Object.values(obj);
-        return values[0].name;
+        if (obj)
+        {
+            const values = Object.values(obj);
+            return values[0].name;
+        }
+        return 'no currency'
     }
     backBtnEvt()
     {

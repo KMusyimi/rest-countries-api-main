@@ -1,3 +1,5 @@
+import darkThemeIcon from './assets/icons/moon_icon.png';
+import lightThemeIcon from './assets/icons/sun_icon.png';
 /**
 * Utility function to calculate the current theme setting.
 * Look for a local storage value.
@@ -34,9 +36,10 @@ export class ThemeSwitcher
         this.initialize();
     }
     themeImgElement(theme){
+        console.log(darkThemeIcon);
         const img = document.createElement('img');
         
-        img.src = theme === 'dark' ? './assets/icons/sun_icon.png' : './assets/icons/moon_icon.png';
+        img.src = theme === 'dark' ? lightThemeIcon : darkThemeIcon;
         img.alt = theme === 'dark' ? 'light button icon' : 'dark button icon';
 
         return img;
