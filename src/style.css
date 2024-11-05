@@ -414,7 +414,8 @@ img {
     flex-wrap: wrap;
 }
 .footer {
-    font-weight: 700;
+    font-size: .925em;
+    font-weight: 500;
     width: 100%;
     margin: auto;
     text-align: center;
