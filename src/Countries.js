@@ -1,25 +1,40 @@
 import AbstractView from "./AbstractView";
 
-let url = 'https://restcountries.com/v3.1/all?fields=name,population,region,capital,flags';
 
-export class HomePage extends AbstractView
+export class Countries extends AbstractView
 {
     constructor()
     {
         super();
-        this.setTitle("Home");
-        this.url = url;
+        this.setTitle(location.pathname.substring(1) || "Home");
+        this.data = [];
+        this.url = 'https://restcountries.com/v3.1/all?fields=name,population,region,capital,flags';
     }
+
     async getHtml()
     {
+        const region = location.pathname.substring(1) || '';
+        
         document.getElementById("content").innerHTML = '';
-        document.getElementById("content").classList.remove("page");
+        document.getElementById("content").className = 'main';
 
-        const dataPromise = await this.getData(this.url);
+        if (this.data.length === 0)
+        {
+            const dataPromise = await this.getData(this.url);
 
-        this.sortDataAlphabetically(dataPromise);
+            if (dataPromise.status === 404)
+            {
+                return `<h1>Cannot find countries</h1>`
+            }
+            this.data = [...dataPromise];
+        }
 
-        return dataPromise.map(data =>
+        const dataArr = region ? this.data.filter(data => data.region.toLowerCase() === region) : this.data;
+
+
+        this.sortDataAlphabetically(dataArr);
+
+        return dataArr.map(data =>
         {
             const nameLowerCase = data.name['common'].replace(/\s+/g, '-').toLowerCase();
             return `<article id='${nameLowerCase}' class='country_card'>

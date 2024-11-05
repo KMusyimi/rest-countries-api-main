@@ -301,6 +301,7 @@ img {
     border-radius: var(--brs-width);
     scale: var(--sc, 1);
     transition: scale var(--trs-duration) ease-in-out 500ms;
+    box-shadow: 0px 0px 5px var(--bxs-color);
 }
 
 .country_card:hover {
@@ -328,6 +329,7 @@ img {
     border-top-left-radius: var(--brs-width);
     border-top-right-radius: var(--brs-width);
     height: 9.75em;
+    box-shadow: 0px 1px 8px var(--bxs-color);
 }
 
 .country_card>figure img {

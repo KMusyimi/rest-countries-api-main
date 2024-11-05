@@ -13,10 +13,9 @@
     "build": "webpack --progress --mode=production",
     "watch": "webpack --progress --watch && cp -R src/assets dist/",
     "copy": "cp -R src/assets dist/",
-    "server": "webpack serve --open",
+    "dev": "webpack serve --open",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist",
-    "deploy1": "git subtree push --prefix dist origin gh-pages"
+    "deploy": "gh-pages -d dist"
   },
   "keywords": [],
   "author": "Kenn Mich",

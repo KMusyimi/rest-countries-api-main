@@ -4,14 +4,14 @@
 * Fall back to system setting.
 * Fall back to light mode.
 */
-const darkHtml = `<img src="./assets/icons/moon_icon.png" alt="dark button icon"> dark mode`;
-const lightHtml = `<img src="./assets/icons/sun_icon.png" alt="light button icon"> light mode`;
+
 const themeBtn = document.querySelector("[data-theme-toggle]");
 const localStorageTheme = localStorage.getItem("theme");
 const systemSettingDark = window.matchMedia("(prefers-color-scheme: dark)");
 
 function calcSettingThemeStr({ localStorageTheme, systemSettingDark })
 {
+    
     if (localStorageTheme !== null)
     {
         return localStorageTheme;
@@ -35,7 +35,7 @@ export class ThemeSwitcher
     }
     themeImgElement(theme){
         const img = document.createElement('img');
-
+        
         img.src = theme === 'dark' ? './assets/icons/sun_icon.png' : './assets/icons/moon_icon.png';
         img.alt = theme === 'dark' ? 'light button icon' : 'dark button icon';
 
@@ -58,9 +58,13 @@ export class ThemeSwitcher
     {
         const newTheme = currentThemeSetting === "dark" ? "light" : "dark";
         const aria = newTheme === "dark" ? "Change to light theme" : "Change to dark theme";
-        themeBtn.innerHTML = newTheme === "dark" ? lightHtml : darkHtml;
+        const img = this.themeImgElement(newTheme);
 
-        themeBtn.setAttribute("aria-label", aria);
+        themeBtn.textContent = newTheme === "dark" ? 'light mode' : 'dark mode';
+        themeBtn.insertAdjacentElement("afterbegin", img);
+
+        themeBtn.ariaLabel = aria;
+
         this.updateThemeOnHtml(newTheme);
 
         localStorage.setItem("theme", newTheme);

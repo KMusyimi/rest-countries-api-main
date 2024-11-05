@@ -1,11 +1,11 @@
-import * as css from './style.css'
-import Region from './Region';
-import SearchForm from './SearchForm';
-import { HomePage } from './homepage';
-import { Scroll } from './scroll';
-import { ThemeSwitcher } from './theme';
+import { Countries } from './Countries';
 import Page from './Page';
 import PageView from './PageView';
+import { Scroll } from './scroll';
+import SearchForm from './SearchForm';
+import { ThemeSwitcher } from './theme';
+
+import './style.css';
 
 new ThemeSwitcher();
 const form = new SearchForm()
@@ -35,6 +35,7 @@ const navigateTo = (url) =>
     history.pushState({}, "", url);
     router();
 }
+
 const displaySpinner = () =>
 {
     document.querySelector(".loading_container").style.display = '';
@@ -47,7 +48,7 @@ const hideSpinner = () =>
     {
         document.querySelector(".container").classList.add('visible');
         document.querySelector(".loading_container").style.display = 'none';
-    }, 1000);
+    }, 500);
 }
 
 const getParams = match =>
@@ -63,17 +64,21 @@ const getParams = match =>
 const router = async () =>
 {
     displaySpinner();
+
+
     const routes = [
-        { path: '/', view: HomePage },
-        { path: '/africa', view: Region },
-        { path: '/america', view: Region },
-        { path: '/asia', view: Region },
-        { path: '/europe', view: Region },
-        { path: '/oceania', view: Region },
+        { path: '/', view: Countries },
+        { path: '/africa', view: Countries },
+        { path: '/america', view: Countries },
+        { path: '/asia', view: Countries },
+        { path: '/europe', view: Countries },
+        { path: '/oceania', view: Countries },
         // query string page
         { path: '/page', view: Page },
         { path: '/page/:country', view: PageView },
     ];
+
+
     const potentialMatches = routes.map(route =>
     {
         return {
@@ -81,7 +86,9 @@ const router = async () =>
             result: location.pathname.match(pathToRegex(route.path))
         }
     });
+
     let match = potentialMatches.find(potentialMatch => potentialMatch.result !== null);
+
     if (!match)
     {
         match = {
@@ -90,7 +97,9 @@ const router = async () =>
         }
     }
     const view = new match.route.view(getParams(match));
+
     document.getElementById("content").insertAdjacentHTML("beforeend", await view.getHtml());
+
     hideSpinner();
 }
 
@@ -99,11 +108,14 @@ window.addEventListener("popstate", router);
 
 document.addEventListener("DOMContentLoaded", async () =>
 {
+
     window.addEventListener('load', () =>
     {
         document.querySelector(".dropdown_wrapper > a:first-of-type").classList.add("active");
 
     });
+
+
     window.scrollBy({ top: 20, left: 0, behavior: 'smooth' });
     form.initialize();
 
@@ -135,6 +147,8 @@ document.addEventListener("DOMContentLoaded", async () =>
         navigateTo(url)
 
     });
+
+
     router();
 
     searchForm.reset();
@@ -148,13 +162,14 @@ document.addEventListener("DOMContentLoaded", async () =>
     {
         scroll.displayButtonOnScroll(btn);
     });
+
     dropdownBtn.addEventListener("click", function ()
     {
         dropdownBtn.classList.toggle("expanded");
         setTimeout(() =>
         {
             dropdownBtn.classList.remove("expanded");
-        }, 30000);
+        }, 12000);
     });
 });
 
