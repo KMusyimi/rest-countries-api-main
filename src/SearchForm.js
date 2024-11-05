@@ -8,7 +8,7 @@ export default class
     }
     initialize()
     {
-        searchInput.addEventListener("change", this.searchInputEvt);
+        searchInput.addEventListener("keyup", this.searchInputEvt);
     }
 
     searchInputEvt(evt)
