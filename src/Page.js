@@ -6,10 +6,12 @@ const arrowLeft = `<svg viewBox="0 0 32 32" height="23px" width="23px"><defs><st
 
 export default class extends AbstractView
 {
-    constructor()
+    constructor(param)
     {
         super();
+        this.param = param;
         this.params = this.getCountryParam();
+        this.url = `https://restcountries.com/v3.1/name/${this.params}?fullText=true`;
     }
 
     async getHtml()
@@ -18,7 +20,6 @@ export default class extends AbstractView
         document.getElementById("content").innerHTML = '';
 
         this.setTitle(this.params);
-        this.url = `https://restcountries.com/v3.1/name/${this.params}?fullText=true`;
 
         this.createBackBtn();
 
@@ -66,8 +67,9 @@ export default class extends AbstractView
     }
     getCountryParam()
     {
-        const urlParams = new URLSearchParams(location.search);
-        const param = urlParams.get('country');
+        if (this.param.country) { return this.param.country; }
+
+        const param = new URLSearchParams(location.search).get('country');
         return param.replace(/-/g, " ");
     }
     async getBordersHtml(borders)

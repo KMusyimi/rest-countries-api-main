@@ -15,6 +15,7 @@ export class Countries extends AbstractView
     {
         const region = location.pathname.substring(1) || '';
         
+
         document.getElementById("content").innerHTML = '';
         document.getElementById("content").className = 'main';
 
@@ -33,6 +34,7 @@ export class Countries extends AbstractView
 
 
         this.sortDataAlphabetically(dataArr);
+        document.querySelector(".dropdown_btn").classList.remove("expanded");
 
         return dataArr.map(data =>
         {

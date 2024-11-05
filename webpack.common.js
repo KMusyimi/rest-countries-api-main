@@ -4,21 +4,20 @@ const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-    mode: "development",
     entry: './src/index.js',
     output: {
-        filename: './dist/[name].js',
+        filename: './[name].js',
         path: path.resolve(__dirname, 'dist'),
-        // clean: true,
+        clean: true,
         publicPath:'/',
     },
-    devtool: "source-map",
     plugins: [
         new HtmlWebpackPlugin({
-            title: 'Development',
-            template: './src/index.html'
+            title: 'Production',
+            template: "./src/index.html",
         }),
         new MiniCssExtractPlugin()
+
     ],
     module: {
         rules: [
@@ -49,22 +48,12 @@ module.exports = {
             
         ]
     },
-    devServer: {
-        static: {
-            directory: path.join(__dirname, 'dist'),
-        },
-        compress: true,
-        port: 5502,
-        watchFiles: ['./src/index.html'],
-        historyApiFallback: true,
-
-    },
+    
     optimization: {
         runtimeChunk: 'single',
         minimize: true,
         minimizer: [
             new CssMinimizerPlugin(),
         ]
-       
     }
 };

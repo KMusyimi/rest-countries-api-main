@@ -1,6 +1,5 @@
 import { Countries } from './Countries';
 import Page from './Page';
-import PageView from './PageView';
 import { Scroll } from './scroll';
 import SearchForm from './SearchForm';
 import { ThemeSwitcher } from './theme';
@@ -68,14 +67,10 @@ const router = async () =>
 
     const routes = [
         { path: '/', view: Countries },
-        { path: '/africa', view: Countries },
-        { path: '/america', view: Countries },
-        { path: '/asia', view: Countries },
-        { path: '/europe', view: Countries },
-        { path: '/oceania', view: Countries },
+      
         // query string page
         { path: '/page', view: Page },
-        { path: '/page/:country', view: PageView },
+        { path: '/page/:country', view: Page },
     ];
 
 
@@ -131,7 +126,6 @@ document.addEventListener("DOMContentLoaded", async () =>
 
     searchForm.addEventListener('submit', evt =>
     {
-        console.log(location.pathname);
         evt.preventDefault();
         const country = searchInput.value;
         searchForm.reset();
@@ -169,7 +163,7 @@ document.addEventListener("DOMContentLoaded", async () =>
         setTimeout(() =>
         {
             dropdownBtn.classList.remove("expanded");
-        }, 12000);
+        }, 20000);
     });
 });
 

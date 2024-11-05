@@ -1,17 +1,14 @@
 
 const searchInput = document.querySelector("#search");
-const searchForm = document.querySelector("#searchForm");
 
 export default class 
 {
     constructor()
     {
-        // super();
     }
     initialize()
     {
-        // searchForm.addEventListener("submit", this.formSubmit.bind(this));
-        searchInput.addEventListener("keyup", this.searchInputEvt);
+        searchInput.addEventListener("change", this.searchInputEvt);
     }
 
     searchInputEvt(evt)
