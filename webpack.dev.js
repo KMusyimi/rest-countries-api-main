@@ -14,6 +14,5 @@ module.exports = merge(common, {
     port: 5502,
     watchFiles: ['./src/index.html'],
     historyApiFallback: true,
-
   }
 });
