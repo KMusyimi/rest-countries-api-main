@@ -5,6 +5,7 @@ import SearchForm from './SearchForm';
 import { ThemeSwitcher } from './theme';
 
 import './style.css';
+import moment from 'moment/moment';
 
 new ThemeSwitcher();
 const form = new SearchForm()
@@ -151,6 +152,10 @@ document.addEventListener("DOMContentLoaded", async () =>
     const scroll = new Scroll();
 
     const btn = document.getElementById("back_top");
+
+    document.querySelector('.footer').innerHTML = `&copy; ${moment().year()} Coded By: <a href='https://github.com/KMusyimi' target='_blank'>Kennedy Nzyuko</a> Design By: 
+    <a href='https://www.frontendmentor.io/' target='_blank'>frontendmentor</a>`
+
 
     window.addEventListener("scroll", () =>
     {
