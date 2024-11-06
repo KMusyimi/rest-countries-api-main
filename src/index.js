@@ -104,7 +104,6 @@ window.addEventListener("popstate", router);
 
 document.addEventListener("DOMContentLoaded", async () =>
 {
-    
     window.scrollBy({ top: 20, left: 0, behavior: 'smooth' });
     window.addEventListener('load', () =>
     {

@@ -14,7 +14,7 @@
     text-rendering: optimizeLegibility;
     font-optical-sizing: auto;
 }
-
+/* TODO: change theme to media query */
 [data-theme="light"] {
     --bg-color: hsl(0, 0%, 94%);
     --ele-bg-color: var(--white);
