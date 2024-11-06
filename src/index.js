@@ -1,10 +1,10 @@
+import './style.css';
 import { Countries } from './Countries';
 import Page from './Page';
-import { Scroll } from './scroll';
 import SearchForm from './SearchForm';
 import { ThemeSwitcher } from './theme';
+import {createBtnElement} from './scroll';
 
-import './style.css';
 import moment from 'moment/moment';
 
 new ThemeSwitcher();
@@ -104,7 +104,8 @@ window.addEventListener("popstate", router);
 
 document.addEventListener("DOMContentLoaded", async () =>
 {
-
+    
+    window.scrollBy({ top: 20, left: 0, behavior: 'smooth' });
     window.addEventListener('load', () =>
     {
         document.querySelector(".dropdown_wrapper > a:first-of-type").classList.add("active");
@@ -112,7 +113,6 @@ document.addEventListener("DOMContentLoaded", async () =>
     });
 
 
-    window.scrollBy({ top: 20, left: 0, behavior: 'smooth' });
     form.initialize();
 
     document.body.addEventListener("click", evt =>
@@ -149,19 +149,12 @@ document.addEventListener("DOMContentLoaded", async () =>
     searchForm.reset();
 
     const dropdownBtn = document.querySelector(".dropdown_btn");
-    const scroll = new Scroll();
-
-    const btn = document.getElementById("back_top");
-
+  
     document.querySelector('.footer').innerHTML = `&copy; ${moment().year()} Coded By: <a href='https://github.com/KMusyimi' target='_blank'>Kennedy Nzyuko</a> Design By: 
     <a href='https://www.frontendmentor.io/' target='_blank'>frontendmentor</a>`
+    
 
-
-    window.addEventListener("scroll", () =>
-    {
-        scroll.displayButtonOnScroll(btn);
-    });
-
+    createBtnElement();
     dropdownBtn.addEventListener("click", function ()
     {
         dropdownBtn.classList.toggle("expanded");

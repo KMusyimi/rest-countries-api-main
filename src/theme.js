@@ -36,7 +36,6 @@ export class ThemeSwitcher
         this.initialize();
     }
     themeImgElement(theme){
-        console.log(darkThemeIcon);
         const img = document.createElement('img');
         
         img.src = theme === 'dark' ? lightThemeIcon : darkThemeIcon;

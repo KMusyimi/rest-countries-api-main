@@ -18,7 +18,7 @@ export default class extends AbstractView
     {
         document.getElementById("content").classList.add("page");
         document.getElementById("content").innerHTML = '';
-
+        
         this.setTitle(this.params);
 
         this.createBackBtn();

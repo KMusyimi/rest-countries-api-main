@@ -1,4 +1,5 @@
 import AbstractView from "./AbstractView";
+import { createBtnElement } from "./scroll";
 
 
 export class Countries extends AbstractView
@@ -14,11 +15,11 @@ export class Countries extends AbstractView
     async getHtml()
     {
         const region = location.pathname.substring(1) || '';
-        
-
         document.getElementById("content").innerHTML = '';
         document.getElementById("content").className = 'main';
-
+        
+        createBtnElement();
+      
         if (this.data.length === 0)
         {
             const dataPromise = await this.getData(this.url);
@@ -50,5 +51,6 @@ export class Countries extends AbstractView
                 <figure><img src=${data.flags['png']} alt="${data.flags['alt']}" loading="lazy"></figure>
             </article>`;
         }).join('');
+
     }
 }

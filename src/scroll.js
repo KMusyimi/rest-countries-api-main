@@ -1,47 +1,43 @@
-export class Scroll
+
+export function createBtnElement(position = { bottom: "3em", right: "2em" })
 {
-    constructor()
-    {
-        this.initialize();
-    }
-    initialize()
-    {
-        this.backToTopButton({ bottom: "3em", right: "2em" });
-    }
-    displayButtonOnScroll(btn)
-    {
-        // console.log('btn :>> ', btn);
+    const svg = `<svg viewBox="0 0 24 24" fill="currentColor">
+                                <path class="cls-1"
+                                    d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm4.707,9.707a1,1,0,0,1-1.414,0L13,8.414V18a1,1,0,0,1-2,0V8.414L8.707,10.707A1,1,0,1,1,7.293,9.293l4-4a1,1,0,0,1,1.414,0l4,4A1,1,0,0,1,16.707,10.707Z" />
+                            </svg>`
+    
+    const button = document.createElement("button");
 
-        // const btn = document.getElementById("back_top");
-        // if (btn != null)
-        // {
-            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20)
-            {
-                btn.style.display = 'block';
-
-            } else
-            {
-                btn.style.display = 'none';
-            }
-        // }
-    }
-    backToTopButton({ bottom, right })
-    {
-        const button = document.createElement("button");
-        button.type = "button";
-        button.id = "back_top";
-        button.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor"><path class="cls-1" d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm4.707,9.707a1,1,0,0,1-1.414,0L13,8.414V18a1,1,0,0,1-2,0V8.414L8.707,10.707A1,1,0,1,1,7.293,9.293l4-4a1,1,0,0,1,1.414,0l4,4A1,1,0,0,1,16.707,10.707Z"/></svg>`
-        button.style.bottom = bottom;
-        button.style.right = right;
-        button.style.display = 'none';
-
-        button.addEventListener("click", this.backToTopEvt, false);
-        document.getElementById("content").appendChild(button);
-    }
-
-    backToTopEvt()
-    {
-        document.body.scrollTop = 0;
-        document.documentElement.scrollTop = 0;
-    }
+    button.type = "button";
+    button.id = "back_top";
+    button.innerHTML = svg;
+    button.style.bottom = position.bottom;
+    button.style.right = position.right;
+    button.style.display = 'none';
+    button.addEventListener("click", handleClick);
+    document.getElementById("content").insertAdjacentElement('afterbegin', button);
 }
+
+function handleClick()
+{
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+}
+
+window.addEventListener('scroll', () =>
+{
+    const btn = document.getElementById("back_top");
+    if (btn)
+    {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20)
+        {
+            btn.style.display = 'block';
+
+        } else
+        {
+            btn.style.display = 'none';
+        }
+    }
+});
+
+
