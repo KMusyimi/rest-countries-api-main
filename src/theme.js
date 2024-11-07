@@ -36,7 +36,7 @@ export class ThemeSwitcher
         this.initialize();
     }
     themeImgElement(theme){
-        const img = document.createElement('img');
+        const img = new Image();
         
         img.src = theme === 'dark' ? lightThemeIcon : darkThemeIcon;
         img.alt = theme === 'dark' ? 'light button icon' : 'dark button icon';

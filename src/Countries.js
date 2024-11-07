@@ -40,6 +40,7 @@ export class Countries extends AbstractView
         return dataArr.map(data =>
         {
             const nameLowerCase = data.name['common'].replace(/\s+/g, '-').toLowerCase();
+          
             return `
             <article id='${nameLowerCase}' class='country_card'>
                 <section>
